@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background-color: #0c0814; color: #ffffff; font-family: 'Cairo', sans-serif; direction: rtl; }
+
+.app-container { display: flex; min-height: 100vh; }
+.sidebar { width: 250px; background-color: #120d24; padding: 25px 15px; border-left: 1px solid rgba(255, 255, 255, 0.05); }
+.app-title { font-size: 20px; color: #fff; margin-bottom: 30px; text-align: center; }
+.sidebar a { display: block; color: #a0a0a0; text-decoration: none; padding: 12px 15px; margin-bottom: 8px; border-radius: 8px; font-size: 14px; transition: 0.3s; }
+.sidebar a:hover, .sidebar a.active { background-color: #231647; color: #ffffff; font-weight: bold; }
+
+.main-content { flex: 1; padding: 30px; overflow-y: auto; }
+h1 { font-size: 22px; font-weight: bold; margin-bottom: 4px; }
+.subtitle { color: #8c85a3; font-size: 13px; margin-bottom: 25px; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 25px; }
+.card { background-color: #16102e; padding: 18px; border-radius: 12px; }
+.card-title { font-size: 12px; color: #8c85a3; display: block; margin-bottom: 8px; }
+.card-value { font-size: 20px; font-weight: bold; }
+.card-value.safe { color: #4CAF50; }
+
+.bottom-sections { display: flex; gap: 20px; }
+.section-box { background-color: #16102e; padding: 20px; border-radius: 12px; flex: 1; }
+.section-box h3 { font-size: 15px; margin-bottom: 15px; color: #fff; }
+
+.divider { border: none; border-top: 1px solid rgba(255, 255, 255, 0.05); margin: 12px 0; }
+.activity-item { display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+.toggle-item { display: flex; justify-content: space-between; align-items: center; }
+
+.purple-btn { background-color: #6C5CE7; color: white; border: none; padding: 9px 16px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-size: 13px; margin-left: 8px; }
+.outline-btn { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.2); padding: 9px 16px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-size: 13px; }
+.emergency-btn { background-color: #d9534f; color: white; border: none; padding: 12px; border-radius: 8px; font-family: 'Cairo'; font-weight: bold; cursor: pointer; }
+
+.tag-green { background: rgba(76, 175, 80, 0.15); color: #4CAF50; padding: 3px 10px; border-radius: 6px; font-size: 11px; }
+.tag-red { background: rgba(217, 83, 79, 0.15); color: #d9534f; padding: 3px 10px; border-radius: 6px; font-size: 11px; }
+.tag-purple { background: #6C5CE7; color: white; padding: 3px 8px; border-radius: 6px; font-size: 10px; }
+
+.toggle-switch { width: 36px; height: 18px; accent-color: #6C5CE7; cursor: pointer; }
+.custom-input { width: 100%; background: #20173e; border: 1px solid rgba(255,255,255,0.1); color: white; padding: 10px; border-radius: 8px; font-family: 'Cairo'; margin-top: 5px; }
+.form-group { margin-bottom: 15px; font-size: 13px; color: #a0a0a0; }
+
+.chart-placeholder { display: flex; align-items: flex-end; gap: 8px; height: 100px; padding-top: 15px; }
+.chart-placeholder .bar { flex: 1; background-color: #6C5CE7; border-radius: 4px 4px 0 0; }
+.progress-bar { background: #20173e; height: 8px; border-radius: 4px; margin-top: 10px; overflow: hidden; }
+.progress-fill { background: #6C5CE7; height: 100%; }
+.plan-list { list-style: none; font-size: 12px; color: #a0a0a0; margin-top: 10px; line-height: 2.2; }
+/* إجبار جميع الأزرار والروابط والعناصر على القبول الفوري للنقر والتفاعل */
+button, a, input, .nav-link, .scan-btn, .sos-absolute-btn {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    position: relative;
+    z-index: 9999;
+}
+
+/* إلغاء أي طبقة شفافة وهمية قد تغطي الشاشة وتمنع الماوس */
+body, .app-container, .main-content {
+    pointer-events: auto !important;
+}
+
+/* ===== رأس الصفحة (لوحة التحكم) ===== */
+.header-section { display: flex; justify-content: space-between; align-items: flex-start; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
+
+/* ===================================================
+   نسخة الموبايل (شاشات أقل من 768px) - تنطبق على كل الصفحات
+   القائمة الجانبية تتحول لشريط تنقل تحت
+   =================================================== */
+@media (max-width: 768px) {
+    .app-container { display: block; }
+
+    .sidebar {
+        position: fixed;
+        bottom: 0; left: 0; right: 0;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        gap: 4px;
+        overflow-x: auto;
+        padding: 8px 8px calc(8px + env(safe-area-inset-bottom, 0px));
+        border-left: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        z-index: 10000; /* أعلى من z-index: 9999 بتاع الأزرار، عشان الشريط يفضل فوق */
+    }
+    .app-title { display: none; }
+
+    .sidebar a {
+        flex: 0 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        margin: 0;
+        padding: 6px 10px;
+        font-size: 11px;
+        white-space: nowrap;
+    }
+    .sidebar a .icon { font-size: 20px; }
+
+    .main-content { padding: 16px 16px 100px; } /* مساحة تحت عشان الشريط ما يغطيش المحتوى */
+
+    .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .bottom-sections { flex-direction: column; gap: 14px; }
+    .header-section { flex-direction: column; align-items: stretch; }
+    .header-section form, .emergency-btn { width: 100%; }
+}

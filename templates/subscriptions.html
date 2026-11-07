@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>Safe Guard - الاشتراكات وطرق الدفع</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .plans-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        .plan-card {
+            background: #1e1b4b;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 16px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            transition: 0.3s;
+        }
+        .plan-card:hover {
+            transform: translateY(-5px);
+            border-color: #4f46e5;
+        }
+        .plan-btn, .pay-btn {
+            background: linear-gradient(135deg, #4f46e5, #3b82f6);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+        .plan-btn:hover, .pay-btn:hover {
+            opacity: 0.9;
+        }
+        .success-alert {
+            background: #16a34a;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+        /* تصميم صندوق الدفع */
+        .payment-box {
+            background: #1e1b4b;
+            border: 1px solid #4f46e5;
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 500px;
+            margin: 20px auto;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.4);
+            text-align: right;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            color: #94a3b8;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            background: #0f172a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .payment-methods {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+        .payment-icon {
+            font-size: 28px;
+            color: #94a3b8;
+            background: #0f172a;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- الشريط الجانبي الثابت -->
+        <aside class="sidebar">
+            <div class="brand-container">
+                <span class="brand-name">Safe Guard</span>
+                <div class="brand-logo-box"><i class="fa-solid fa-shield-halved"></i></div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/" class="nav-link"><span class="nav-label">لوحة التحكم</span><i class="fa-solid fa-table-cells-large nav-icon"></i></a>
+                <a href="/scan" class="nav-link"><span class="nav-label">الفحص والحماية</span><i class="fa-regular fa-shield-check nav-icon"></i></a>
+                <a href="/sos" class="nav-link"><span class="nav-label">زر الطوارئ والموقع</span><i class="fa-solid fa-location-crosshairs nav-icon"></i></a>
+                <a href="/subscriptions" class="nav-link active"><span class="nav-label">الاشتراكات</span><i class="fa-solid fa-gem nav-icon"></i></a>
+                <a href="/profile" class="nav-link"><span class="nav-label">صفحة المستخدم</span><i class="fa-regular fa-user nav-icon"></i></a>
+                <a href="/parental" class="nav-link"><span class="nav-label">الرقابة الوالدية</span><i class="fa-solid fa-users nav-icon"></i></a>
+                <a href="/notifications" class="nav-link"><span class="nav-label">الإشعارات والتنبيهات</span><i class="fa-solid fa-bell nav-icon"></i></a>
+                <a href="/settings" class="nav-link"><span class="nav-label">الإعدادات</span><i class="fa-solid fa-sun nav-icon"></i></a>
+            </nav>
+        </aside>
+
+        <!-- المحتوى الرئيسي -->
+        <main class="main-content">
+            <h1>خطط الاشتراكات وحماية الحساب</h1>
+            <p class="subtitle">اختر الباقة المناسبة لتأمين جهازك وصلاحيات عائلتك بالكامل</p>
+
+            {% if sub_message %}
+                <div class="success-alert">
+                    <i class="fa-solid fa-circle-check" style="margin-left: 8px;"></i> {{ sub_message }}
+                </div>
+            {% endif %}
+
+            <!-- لو لم يتم اختيار باقة بعد، نعرض الكروت -->
+            {% if not show_payment and not sub_message %}
+                <div class="plans-container">
+                    <!-- الباقة الشهرية (4$) -->
+                    <div class="plan-card">
+                        <i class="fa-solid fa-calendar-days" style="font-size: 35px; color: #60a5fa; margin-bottom: 15px;"></i>
+                        <h2>الاشتراك الشهري</h2>
+                        <p style="color: #94a3b8; margin: 15px 0;">حماية شاملة مرنة تدفع شهرًا بيومه دون التزام طويل.</p>
+                        <h3 style="color: #4ade80; margin-bottom: 20px;">4$ / شهرياً</h3>
+                        <form method="POST">
+                            <input type="hidden" name="action" value="select_plan">
+                            <input type="hidden" name="plan" value="monthly">
+                            <button type="submit" class="plan-btn">اختيار الباقة الشهرية</button>
+                        </form>
+                    </div>
+
+                    <!-- الباقة السنوية (80$) -->
+                    <div class="plan-card" style="border-color: #4f46e5; position: relative;">
+                        <span style="background: #4f46e5; color: white; padding: 4px 12px; font-size: 12px; border-radius: 20px; position: absolute; top: -12px; right: 20px;">الأكثر توفيراً</span>
+                        <i class="fa-solid fa-shield-cat" style="font-size: 35px; color: #a78bfa; margin-bottom: 15px;"></i>
+                        <h2>الاشتراك السنوي</h2>
+                        <p style="color: #94a3b8; margin: 15px 0;">حماية متكاملة طوال العام مع دعم فني أولوي.</p>
+                        <h3 style="color: #4ade80; margin-bottom: 20px;">80$ / سنوياً</h3>
+                        <form method="POST">
+                            <input type="hidden" name="action" value="select_plan">
+                            <input type="hidden" name="plan" value="yearly">
+                            <button type="submit" class="plan-btn" style="background: linear-gradient(135deg, #16a34a, #22c55e);">اختيار الباقة السنوية</button>
+                        </form>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- لو تم اختيار باقة، نظهر صندوق إدخال بيانات الدفع -->
+            {% if show_payment %}
+                <div class="payment-box">
+                    <h2 style="color: #f8fafc; margin-bottom: 10px;">إتمام عملية الدفع</h2>
+                    <p style="color: #60a5fa; margin-bottom: 20px;">الباقة المختار: <strong>{{ selected_plan }}</strong></p>
+
+                    <div class="payment-methods">
+                        <i class="fa-brands fa-cc-visa payment-icon" style="color: #60a5fa;"></i>
+                        <i class="fa-brands fa-cc-mastercard payment-icon" style="color: #f97316;"></i>
+                        <i class="fa-solid fa-credit-card payment-icon" style="color: #4ade80;"></i>
+                    </div>
+
+                    <form method="POST">
+                        <input type="hidden" name="action" value="confirm_payment">
+                        <input type="hidden" name="plan_name" value="{{ selected_plan }}">
+
+                        <div class="form-group">
+                            <label>اسم حامل البطاقة:</label>
+                            <input type="text" name="card_holder" class="form-control" placeholder="الاسم مكتوب على البطاقة" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>رقم البطاقة الائتمانية:</label>
+                            <input type="text" name="card_number" class="form-control" placeholder="XXXX XXXX XXXX XXXX" maxlength="16" required>
+                        </div>
+
+                        <div style="display: flex; gap: 10px;">
+                            <div class="form-group" style="flex: 1;">
+                                <label>تاريخ الانتهاء:</label>
+                                <input type="text" name="expiry" class="form-control" placeholder="MM/YY" required>
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label>رمز الأمان (CVV):</label>
+                                <input type="password" name="cvv" class="form-control" placeholder="123" maxlength="4" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="pay-btn" style="background: linear-gradient(135deg, #16a34a, #22c55e); margin-top: 15px;">
+                            <i class="fa-solid fa-lock" style="margin-left: 8px;"></i> دفع وتفعيل الاشتراك فوراً
+                        </button>
+                    </form>
+                </div>
+            {% endif %}
+        </main>
+    </div>
+</body>
+</html>

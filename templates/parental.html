@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>Safe Guard - الرقابة الوالدية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="app-container">
+        <!-- الشريط الجانبي الثابت -->
+        <aside class="sidebar">
+            <div class="brand-container">
+                <span class="brand-name">Safe Guard</span>
+                <div class="brand-logo-box"><i class="fa-solid fa-shield-halved"></i></div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/" class="nav-link"><span class="nav-label">لوحة التحكم</span><i class="fa-solid fa-table-cells-large nav-icon"></i></a>
+                <a href="/scan" class="nav-link"><span class="nav-label">الفحص والحماية</span><i class="fa-regular fa-shield-check nav-icon"></i></a>
+                <a href="/sos" class="nav-link"><span class="nav-label">زر الطوارئ والموقع</span><i class="fa-solid fa-location-crosshairs nav-icon"></i></a>
+                <a href="/subscriptions" class="nav-link"><span class="nav-label">الاشتراكات</span><i class="fa-solid fa-gem nav-icon"></i></a>
+                <a href="/profile" class="nav-link"><span class="nav-label">صفحة المستخدم</span><i class="fa-regular fa-user nav-icon"></i></a>
+                <a href="/parental" class="nav-link active"><span class="nav-label">الرقابة الوالدية</span><i class="fa-solid fa-users nav-icon"></i></a>
+                <a href="/notifications" class="nav-link"><span class="nav-label">الإشعارات والتنبيهات</span><i class="fa-solid fa-bell nav-icon"></i></a>
+                <a href="/settings" class="nav-link"><span class="nav-label">الإعدادات</span><i class="fa-solid fa-sun nav-icon"></i></a>
+            </nav>
+        </aside>
+
+        <!-- المحتوى الرئيسي للرقابة الوالدية -->
+        <main class="main-content">
+            <h1>نظام الرقابة الوالدية الذكي</h1>
+            <p class="subtitle">متابعة أجهزة الأبناء وحمايتهم في الوقت الفعلي</p>
+
+            {% if user and user.role == 'child' %}
+                <!-- واجهة خاصة بحساب الطفل -->
+                <div class="section-box" style="text-align: center; padding: 40px; background: rgba(76, 175, 80, 0.05); border: 1px solid rgba(76, 175, 80, 0.3);">
+                    <div style="font-size: 50px; color: #4CAF50; margin-bottom: 15px;">
+                        <i class="fa-solid fa-shield-heart"></i>
+                    </div>
+                    <h3 style="color: #4CAF50; margin-bottom: 10px;">جهازك محمي ومرتبط بولي الأمر</h3>
+                    <p style="font-size: 14px; color: #a29db5; max-width: 500px; margin: 0 auto 20px auto;">
+                        هذا الجهاز مسجل في النظام كـ <strong style="color: #fff;">"طفل"</strong>. يتمتع بكافة ميزات الأمان وتنبيهات الطوارئ ومشاركة الموقع مع ولي الأمر للحفاظ على سلامتك.
+                    </p>
+                    <span style="background: #100b20; padding: 8px 20px; border-radius: 20px; font-size: 13px; border: 1px solid #4CAF50; color: #4CAF50;">الحالة: تحت الحماية والرعاية</span>
+                </div>
+
+            {% else %}
+                <!-- واجهة خاصة بحساب ولي الأمر (المدير) -->
+                <div class="section-box" style="margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; background: #20173e; border: 1px solid rgba(124, 58, 237, 0.3);">
+                    <div>
+                        <h3 style="margin-bottom: 5px;">إدارة أجهزة الأبناء</h3>
+                        <p style="font-size: 13px; color: #a29db5;">يمكنك ربط ومتابعة حالة أجهزة أطفالك وتلقي تنبيهات الطوارئ الخاصة بهم</p>
+                    </div>
+                    <button type="button" class="purple-btn" onclick="alert('خاصية إضافة جهاز طفل جديد قيد التفعيل عبر رمز الاقتران')">
+                        <i class="fa-solid fa-plus" style="margin-left: 5px;"></i> إضافة جهاز طفل
+                    </button>
+                </div>
+
+                <!-- قائمة الأجهزة المرتبطة افتراضياً -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                    
+                    <!-- جهاز طفل 1 -->
+                    <div class="section-box" style="display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                <h4 style="color: #a78bfa; font-size: 16px;"><i class="fa-solid fa-mobile-screen" style="margin-left: 6px;"></i> هاتف أحمد (الابن)</h4>
+                                <span style="background: rgba(76, 175, 80, 0.2); color: #4CAF50; font-size: 11px; padding: 4px 10px; border-radius: 12px;">آمن ومتصل</span>
+                            </div>
+                            <ul style="list-style: none; padding: 0; font-size: 13px; color: #a29db5; line-height: 2.2;">
+                                <li><i class="fa-solid fa-battery-three-quarters" style="color: #a78bfa; margin-left: 8px;"></i> البطارية: 82%</li>
+                                <li><i class="fa-solid fa-location-dot" style="color: #ef4444; margin-left: 8px;"></i> الموقع: مدرسة النيل (نشط)</li>
+                                <li><i class="fa-solid fa-shield-check" style="color: #4CAF50; margin-left: 8px;"></i> التطبيقات المفحوصة: سليمة</li>
+                            </ul>
+                        </div>
+                        <div style="margin-top: 20px; display: flex; gap: 10px;">
+                            <button class="purple-btn" style="flex: 1; font-size: 12px; padding: 8px;" onclick="alert('جاري تتبع موقع هاتف أحمد...')">تتبع الموقع</button>
+                            <button class="purple-btn" style="flex: 1; font-size: 12px; padding: 8px; background: #20173e; border: 1px solid #7c3aed;" onclick="alert('تم فحص جهاز الابن بنجاح')">فحص الجهاز</button>
+                        </div>
+                    </div>
+
+                </div>
+            {% endif %}
+        </main>
+    </div>
+</body>
+</html>

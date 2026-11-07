@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safe Guard - تتبع الموقع</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .wrap { max-width: 700px; margin: 0 auto; padding: 20px 16px 40px; }
+        .banner { background: linear-gradient(135deg, #ef4444, #dc2626); border-radius: 16px; padding: 18px; margin-bottom: 16px; }
+        .banner h1 { font-size: 20px; margin: 0 0 4px; }
+        .banner p { font-size: 13px; opacity: .9; }
+        .map { width: 100%; height: 380px; border: 0; border-radius: 14px; background: #16102e; }
+        .meta { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin: 14px 0; font-size: 13px; color: #a29db5; }
+        .live { color: #4ade80; }
+        .btn { display: block; text-align: center; padding: 13px; border-radius: 10px; background: linear-gradient(135deg, #4f46e5, #3b82f6); color: #fff; text-decoration: none; font-weight: bold; }
+        .ended { display: none; text-align: center; padding: 50px 20px; background: #16102e; border-radius: 16px; }
+        .ended.show { display: block; }
+        .ended i { font-size: 44px; color: #4ade80; margin-bottom: 12px; }
+    </style>
+</head>
+<body>
+    <div class="wrap" id="wrap" data-token="{{ ev.token }}" data-active="{{ 'true' if ev.status == 'active' else 'false' }}" data-lat="{{ ev.lat }}" data-lng="{{ ev.lng }}">
+        {% if ev.status == 'active' %}
+        <div id="live">
+            <div class="banner">
+                <h1>🚨 {{ owner.username }} في حالة طوارئ</h1>
+                <p>الموقع يتحدث تلقائياً كل بضع ثوانٍ</p>
+            </div>
+            <iframe class="map" id="map" title="الموقع"></iframe>
+            <div class="meta">
+                <span class="live"><i class="fa-solid fa-circle" style="font-size:8px;"></i> تتبع مباشر</span>
+                <span>آخر تحديث: <b id="updated">{{ updated }}</b></span>
+                <span>الدقة: <b id="acc">{{ ev.accuracy|round|int }}</b> متر</span>
+            </div>
+            <a class="btn" id="gmaps" target="_blank" rel="noopener">فتح في خرائط جوجل</a>
+        </div>
+        {% endif %}
+
+        <div class="ended{{ ' show' if ev.status != 'active' else '' }}" id="ended">
+            <i class="fa-solid fa-circle-check"></i>
+            <h2>انتهى التتبع</h2>
+            <p style="color:#a29db5;margin-top:6px;">أوقف المستخدم مشاركة الموقع.</p>
+        </div>
+    </div>
+
+    <script>
+        var wrap = document.getElementById('wrap');
+        var TOKEN = wrap.dataset.token;
+        var ACTIVE = wrap.dataset.active === 'true';
+        var first = { lat: parseFloat(wrap.dataset.lat), lng: parseFloat(wrap.dataset.lng) };
+
+        function render(lat, lng) {
+            var d = 0.004;
+            document.getElementById('map').src =
+                'https://www.openstreetmap.org/export/embed.html?bbox=' +
+                (lng - d) + '%2C' + (lat - d * 0.7) + '%2C' + (lng + d) + '%2C' + (lat + d * 0.7) +
+                '&layer=mapnik&marker=' + lat + '%2C' + lng;
+            document.getElementById('gmaps').href = 'https://www.google.com/maps?q=' + lat + ',' + lng;
+        }
+
+        function poll() {
+            fetch('/api/track/' + TOKEN).then(function (r) { return r.json(); }).then(function (d) {
+                if (d.status !== 'active') {
+                    document.getElementById('live').style.display = 'none';
+                    document.getElementById('ended').classList.add('show');
+                    clearInterval(t);
+                    return;
+                }
+                render(d.lat, d.lng);
+                document.getElementById('updated').textContent = d.updated;
+                document.getElementById('acc').textContent = Math.round(d.accuracy);
+            }).catch(function () {});
+        }
+
+        if (ACTIVE) { render(first.lat, first.lng); var t = setInterval(poll, 10000); }
+    </script>
+</body>
+</html>

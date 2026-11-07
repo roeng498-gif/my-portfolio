@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Safe Guard - لوحة التحكم</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* ===== إجراءات سريعة: ستايل موحد مع باقي الصفحات ===== */
+        .section-box .action-btn {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            padding: 13px 18px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,.25);
+            background: transparent;
+            color: #fff;
+            font-size: 15px;
+            font-weight: bold;
+            font-family: inherit;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: .3s;
+        }
+        .section-box .action-btn:last-child { margin-bottom: 0; }
+        .section-box .action-btn:hover { border-color: #4f46e5; background: #1e293b; }
+        .section-box .action-btn.primary {
+            background: linear-gradient(135deg, #4f46e5, #3b82f6);
+            border: none;
+        }
+        .section-box .action-btn.primary:hover { opacity: .9; }
+
+        /* ===== الموبايل: القائمة الجانبية تبقى شريط تحت ===== */
+        @media (max-width: 768px) {
+            .app-container { display: block !important; }
+
+            .sidebar {
+                position: fixed !important;
+                bottom: 0; left: 0; right: 0; top: auto !important;
+                width: 100% !important; height: auto !important;
+                display: flex !important;
+                flex-direction: row !important;
+                overflow-x: auto;
+                gap: 4px;
+                padding: 8px 8px calc(8px + env(safe-area-inset-bottom, 0px)) !important;
+                z-index: 100;
+                box-sizing: border-box;
+                background: #0f0c29;
+                border-top: 1px solid rgba(255,255,255,.1);
+            }
+            .sidebar .app-title { display: none; }
+            .sidebar a {
+                flex: 0 0 auto;
+                display: flex !important;
+                flex-direction: column;
+                align-items: center;
+                gap: 2px;
+                padding: 6px 10px !important;
+                margin: 0 !important;
+                font-size: 11px !important;
+                white-space: nowrap;
+            }
+            .sidebar a .icon { font-size: 20px; margin: 0 !important; }
+
+            .main-content {
+                margin: 0 !important;
+                width: 100% !important;
+                box-sizing: border-box;
+                padding: 16px 16px 100px !important; /* مساحة للشريط اللي تحت */
+            }
+            .header-section { flex-direction: column; align-items: stretch !important; gap: 12px; }
+            .header-section form, .emergency-btn { width: 100%; }
+            .stats-grid { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+            .bottom-sections { display: flex !important; flex-direction: column; gap: 14px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- القائمة الجانبية -->
+        <div class="sidebar">
+            <h2 class="app-title">Safe Guard</h2>
+            <a href="/" class="active"><span class="icon">🏠</span> لوحة التحكم</a>
+            <a href="/scan"><span class="icon">🛡️</span> الفحص والحماية</a>
+            <a href="/sos"><span class="icon">🚨</span> زر الطوارئ</a>
+            <a href="/subscriptions"><span class="icon">💎</span> الاشتراكات</a>
+            <a href="/profile"><span class="icon">👤</span> صفحة المستخدم</a>
+            <a href="/parental"><span class="icon">👨‍👩‍👧‍👦</span> الرقابة الأبوية</a>
+            <a href="/notifications"><span class="icon">🔔</span> الإشعارات</a>
+            <a href="/settings"><span class="icon">⚙️</span> الإعدادات</a>
+        </div>
+
+        <!-- المحتوى الرئيسي -->
+        <div class="main-content">
+            <div class="header-section">
+                <div>
+                    <h1>مرحباً بك في لوحة التحكم</h1>
+                    <p>النظام يعمل بكفاءة عالية، وكل أفراد العائلة في أمان.</p>
+                </div>
+                <form action="/sos" method="POST" style="margin: 0;">
+                    <button type="submit" class="emergency-btn" style="cursor: pointer; border: none;">
+                        🚨 تنبيه طوارئ فوري
+                    </button>
+                </form>
+            </div>
+
+            <!-- بطاقات الإحصائيات -->
+            <div class="stats-grid">
+                <div class="card">
+                    <span class="card-title">حالة الحماية</span>
+                    <div class="card-value safe">آمن</div>
+                </div>
+                <div class="card">
+                    <span class="card-title">الأجهزة المتصلة</span>
+                    <div class="card-value">4</div>
+                </div>
+                <div class="card">
+                    <span class="card-title">آخر فحص</span>
+                    <div class="card-value" style="font-size: 16px;">منذ ساعتين</div>
+                </div>
+                <div class="card">
+                    <span class="card-title">التنبيهات</span>
+                    <div class="card-value">0</div>
+                </div>
+            </div>
+
+            <div class="bottom-sections">
+                <!-- الإجراءات السريعة -->
+                <div class="section-box">
+                    <h3>إجراءات سريعة</h3>
+                    <a href="/scan" class="action-btn primary">🔍 بدء فحص جديد</a>
+                    <a href="/parental" class="action-btn">➕ ربط جهاز طفل</a>
+                    <a href="/parental" class="action-btn">⏱️ تحديد وقت الاستخدام</a>
+                </div>
+
+                <!-- آخر النشاطات -->
+                <div class="section-box activity-box">
+                    <h3>آخر النشاطات</h3>
+                    <div class="activity-item">
+                        <div>
+                            <strong>اكتمل فحص الثغرات بنجاح</strong>
+                            <p>لم يتم العثور على تهديدات.</p>
+                        </div>
+                        <span class="activity-time">03:10 ص</span>
+                    </div>
+                    <hr class="divider">
+                    <div class="activity-item">
+                        <div>
+                            <strong>تم ربط جهاز جديد</strong>
+                            <p>هاتف الطفل، الأبواب</p>
+                        </div>
+                        <span class="activity-time safe">آمن</span>
+                    </div>
+                    <hr class="divider">
+                    <div class="activity-item">
+                        <div>
+                            <strong>تحديث القواعد الأمنية</strong>
+                            <p>النسخة الأحدث مفعلة</p>
+                        </div>
+                        <span class="activity-time">منذ يومين</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>Safe Guard - حساب المستخدم</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .profile-card {
+            background: #1e1b4b;
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 650px;
+            margin: 30px auto;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+        .form-group label {
+            display: block;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            background: #0f172a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .save-btn {
+            background: linear-gradient(135deg, #4f46e5, #3b82f6);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+        }
+        .save-btn:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- الشريط الجانبي الثابت -->
+        <aside class="sidebar">
+            <div class="brand-container">
+                <span class="brand-name">Safe Guard</span>
+                <div class="brand-logo-box"><i class="fa-solid fa-shield-halved"></i></div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/" class="nav-link"><span class="nav-label">لوحة التحكم</span><i class="fa-solid fa-table-cells-large nav-icon"></i></a>
+                <a href="/scan" class="nav-link"><span class="nav-label">الفحص والحماية</span><i class="fa-regular fa-shield-check nav-icon"></i></a>
+                <a href="/sos" class="nav-link"><span class="nav-label">زر الطوارئ والموقع</span><i class="fa-solid fa-location-crosshairs nav-icon"></i></a>
+                <a href="/subscriptions" class="nav-link"><span class="nav-label">الاشتراكات</span><i class="fa-solid fa-gem nav-icon"></i></a>
+                <a href="/profile" class="nav-link active"><span class="nav-label">صفحة المستخدم</span><i class="fa-regular fa-user nav-icon"></i></a>
+                <a href="/parental" class="nav-link"><span class="nav-label">الرقابة الوالدية</span><i class="fa-solid fa-users nav-icon"></i></a>
+                <a href="/notifications" class="nav-link"><span class="nav-label">الإشعارات والتنبيهات</span><i class="fa-solid fa-bell nav-icon"></i></a>
+                <a href="/settings" class="nav-link"><span class="nav-label">الإعدادات</span><i class="fa-solid fa-sun nav-icon"></i></a>
+            </nav>
+        </aside>
+
+        <!-- المحتوى الرئيسي -->
+        <main class="main-content">
+            <h1>حساب المستخدم</h1>
+            <p class="subtitle">إدارة وتحديد تفاصيل المستخدم في النظام (ولي أمر أو طفل)</p>
+
+            <div class="profile-card">
+                <form method="POST">
+                    <div class="form-group">
+                        <label>اسم المستخدم:</label>
+                        <input type="text" name="username" class="form-control" value="{{ user.username }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>البريد الإلكتروني:</label>
+                        <input type="email" name="email" class="form-control" value="{{ user.email }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label>رقم الهاتف:</label>
+                        <input type="text" name="phone" class="form-control" value="{{ user.phone }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label>نوع الحساب في النظام:</label>
+                        <select name="role" class="form-control">
+                            <option value="child" {% if user.role == 'child' %}selected{% endif %}>طفل (جهاز محمي)</option>
+                            <option value="parent" {% if user.role == 'parent' %}selected{% endif %}>ولي أمر (مدير النظام)</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="save-btn">
+                        <i class="fa-solid fa-floppy-disk" style="margin-left: 8px;"></i> حفظ التغييرات
+                    </button>
+                </form>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
