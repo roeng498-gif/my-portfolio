@@ -1175,8 +1175,7 @@ def check_code(user, code):
     db.session.commit()
     links.log(user.id, 'phone_verified', 'user', user.id, ip=client_ip())
     return True, ''
-
-
+         
 @app.route('/verify', methods=['GET', 'POST'])
 @login_required
 def verify():
@@ -1185,20 +1184,20 @@ def verify():
         return redirect(url_for('index'))
     msg = error = ''
     if request.method == 'POST':
-     if request.form.get('action') == 'send':
-        # [تعديل] استقبال الكود بدل الرسالة
-        ok, result_data, _ = issue_code(user)
-        if ok:
-            msg, error = (tr('phone.code_sent', phone=mask_phone(user.phone)), '')
-            # للتجربة: لو السيرفر بيطبع في الكونسول، بنعرض الكود في رسالة عشان نستخدمه
-            if app.config.get('SMS_PROVIDER') == 'console':
-                msg += f" (كود التجربة: {result_data})"
+        if request.form.get('action') == 'send':
+            # [تعديل] استقبال الكود بدل الرسالة
+            ok, result_data, _ = issue_code(user)
+            if ok:
+                msg, error = (tr('phone.code_sent', phone=mask_phone(user.phone)), '')
+                # للتجربة: لو السيرفر بيطبع في الكونسول، بنعرض الكود في رسالة عشان نستخدمه
+                if app.config.get('SMS_PROVIDER') == 'console':
+                    msg += f" (كود التجربة: {result_data})"
+            else:
+                msg, error = ('', result_data)
         else:
-            msg, error = ('', result_data)
-    else:
-        ok, err = check_code(user, request.form.get('code', ''))
-        if ok:
-            return redirect(url_for('index'))
+            ok, err = check_code(user, request.form.get('code', ''))
+            if ok:
+                return redirect(url_for('index'))
             error = err
     return render_template('verify.html', masked=mask_phone(user.phone), msg=msg, error=error)
 
