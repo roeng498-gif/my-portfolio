@@ -1121,9 +1121,8 @@ def send_sms(phone, body):
     app.logger.info('[SMS تجريبي] إلى %s: %s', phone, body)
     return True
 
-
 def issue_code(user):
-    """يولّد كود ويبعته. يرجّع (نجح؟، رسالة، ثواني الانتظار)"""
+    """يولّد كود ويبعته. يرجّع (نجح؟، الكود أو الخطأ، ثواني الانتظار)"""
     now = now_utc()
     if not user.phone:
         return False, tr('phone.no_phone'), 0
@@ -1153,7 +1152,9 @@ def issue_code(user):
     row.sent_at = now
     db.session.add(SmsLog(phone=user.phone, ip=ip))
     db.session.commit()
-    return True, '', app.config['OTP_COOLDOWN']
+    
+    # [تعديل]: بنرجع الكود بدل الرسالة الفاضية
+    return True, code, app.config['OTP_COOLDOWN']
 
 
 def check_code(user, code):
@@ -1184,13 +1185,20 @@ def verify():
         return redirect(url_for('index'))
     msg = error = ''
     if request.method == 'POST':
-        if request.form.get('action') == 'send':
-            ok, err, _ = issue_code(user)
-            msg, error = (tr('phone.code_sent', phone=mask_phone(user.phone)), '') if ok else ('', err)
+     if request.form.get('action') == 'send':
+        # [تعديل] استقبال الكود بدل الرسالة
+        ok, result_data, _ = issue_code(user)
+        if ok:
+            msg, error = (tr('phone.code_sent', phone=mask_phone(user.phone)), '')
+            # للتجربة: لو السيرفر بيطبع في الكونسول، بنعرض الكود في رسالة عشان نستخدمه
+            if app.config.get('SMS_PROVIDER') == 'console':
+                msg += f" (كود التجربة: {result_data})"
         else:
-            ok, err = check_code(user, request.form.get('code', ''))
-            if ok:
-                return redirect(url_for('index'))
+            msg, error = ('', result_data)
+    else:
+        ok, err = check_code(user, request.form.get('code', ''))
+        if ok:
+            return redirect(url_for('index'))
             error = err
     return render_template('verify.html', masked=mask_phone(user.phone), msg=msg, error=error)
 
