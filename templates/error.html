@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+<html lang="{{ lang }}" dir="{{ dir }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>{{ app_name }} - {{ code }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .auth-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .auth-card { width: 100%; max-width: 420px; background: #16102e; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; padding: 32px 28px; text-align: center; }
+        .code { font-size: 52px; font-weight: bold; color: #8B5CF6; line-height: 1; margin-bottom: 12px; }
+        .auth-card h1 { font-size: 19px; margin-bottom: 8px; }
+        .auth-card p { color: #a29db5; font-size: 14px; line-height: 1.8; margin-bottom: 20px; }
+        .auth-btn { display: block; width: 100%; min-height: 46px; line-height: 46px; border-radius: 10px; background: #6C5CE7; color: #fff; text-decoration: none; font-size: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="auth-wrap">
+        <div class="auth-card">
+            <div class="code">{{ code }}</div>
+            <h1>{{ message }}</h1>
+            <p>{{ t('app.tagline') }}</p>
+            <a class="auth-btn" href="{{ url_for('index') if user else url_for('login') }}">{{ t('common.back') }}</a>
+        </div>
+    </div>
+</body>
+</html>

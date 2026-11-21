@@ -1,117 +1,60 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="{{ lang }}" dir="{{ dir }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Safe Guard - الإشعارات والتنبيهات</title>
+    <title>{{ app_name }} - {{ t('notif.title') }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
-        .page-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
-
-        /* معاينة شاشة القفل */
-        .lock-box { border: 1px dashed rgba(124,58,237,.45); margin-bottom: 22px; }
-        .lock-box h3 { display: flex; align-items: center; gap: 8px; }
-        .lock-box .hint { font-size: 13px; color: #8c85a3; margin-bottom: 14px; }
-        .lock-card { background: rgba(255,255,255,.07); backdrop-filter: blur(6px); padding: 14px; border-radius: 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-        .lock-card .app { font-size: 11px; color: #a29db5; margin-bottom: 2px; }
-
-        /* التبويبات */
-        .tabs { display: flex; gap: 8px; margin: 18px 0 14px; overflow-x: auto; padding-bottom: 4px; }
-        .tab { flex: 0 0 auto; background: #20173e; color: #a29db5; border: 1px solid transparent; padding: 8px 16px; border-radius: 20px; font-family: 'Cairo'; font-size: 13px; }
-        .tab.active { background: #6C5CE7; color: #fff; font-weight: bold; }
-        .tab .count { background: rgba(255,255,255,.15); border-radius: 10px; padding: 0 7px; margin-right: 6px; font-size: 11px; }
-
-        /* كروت الإشعارات */
+        .tabs { display: flex; gap: 8px; margin: 16px 0; flex-wrap: wrap; }
+        .tab { border: 1px solid rgba(255,255,255,.15); background: transparent; color: #cbd5e1; border-radius: 9px; padding: 8px 14px; font-family: inherit; font-size: 13px; cursor: pointer; }
+        .tab.active { background: #6C5CE7; border-color: #6C5CE7; color: #fff; font-weight: bold; }
+        .count { opacity: .8; }
         .notif-list { display: flex; flex-direction: column; gap: 10px; }
-        .notif { position: relative; display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-radius: 12px; background: #100b20; border-right: 4px solid var(--c); }
-        .notif .ico { flex: 0 0 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: color-mix(in srgb, var(--c) 18%, transparent); color: var(--c); font-size: 16px; }
-        .notif .body { flex: 1; min-width: 0; }
-        .notif h4 { font-size: 14px; color: #fff; margin-bottom: 3px; }
-        .notif p { font-size: 12px; color: #a29db5; line-height: 1.7; }
-        .notif .time { font-size: 11px; color: #8c85a3; white-space: nowrap; }
-        .notif.unread::after { content: ""; position: absolute; top: 12px; left: 12px; width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
-        .notif.unread { background: #17102e; }
-        .t-danger { --c: #ef4444; }
-        .t-safe   { --c: #4CAF50; }
-        .t-info   { --c: #7c3aed; }
-
-        .empty { text-align: center; color: #8c85a3; font-size: 13px; padding: 30px 0; display: none; }
-
-        @media (max-width: 768px) {
-            .notif { flex-wrap: wrap; }
-            .notif .time { width: 100%; padding-right: 50px; }
-        }
+        .notif { display: flex; gap: 12px; align-items: flex-start; background: #1c1438; border: 1px solid rgba(255,255,255,.06); border-radius: 12px; padding: 14px; }
+        .notif .ico { width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.06); flex: 0 0 auto; }
+        .notif.t-danger .ico { background: rgba(239,68,68,.18); color: #f87171; }
+        .notif.t-safe .ico { background: rgba(76,175,80,.18); color: #4ade80; }
+        .notif.t-info .ico { background: rgba(96,165,250,.18); color: #93c5fd; }
+        .notif .body { flex: 1; }
+        .notif h4 { font-size: 14px; margin-bottom: 3px; }
+        .notif p { font-size: 12.5px; color: #a29db5; line-height: 1.7; }
+        .notif .time { font-size: 11.5px; color: #8b86a3; white-space: nowrap; }
+        .empty { text-align: center; color: #8b86a3; font-size: 13px; padding: 24px 0; }
+        .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .btn { border: 0; border-radius: 9px; padding: 9px 14px; font-family: inherit; font-size: 13px; font-weight: bold; cursor: pointer; background: #6C5CE7; color: #fff; }
+        .btn.ghost { background: transparent; border: 1px solid rgba(255,255,255,.2); color: #e2e8f0; }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <div class="sidebar">
-            <h2 class="app-title">Safe Guard</h2>
-            <a href="/"><span class="icon">🏠</span> لوحة التحكم</a>
-            <a href="/scan"><span class="icon">🛡️</span> الفحص والحماية</a>
-            <a href="/sos"><span class="icon">🚨</span> زر الطوارئ</a>
-            <a href="/subscriptions"><span class="icon">💎</span> الاشتراكات</a>
-            <a href="/profile"><span class="icon">👤</span> صفحة المستخدم</a>
-            <a href="/parental"><span class="icon">👨‍👩‍👧‍👦</span> الرقابة الأبوية</a>
-            <a href="/notifications" class="active"><span class="icon">🔔</span> الإشعارات</a>
-            <a href="/settings"><span class="icon">⚙️</span> الإعدادات</a>
-        </div>
+        {% set active = 'notif' %}{% include '_nav.html' %}
 
         <main class="main-content">
-            <div class="page-head">
-                <div>
-                    <h1>سجل الإشعارات والتنبيهات</h1>
-                    <p class="subtitle">متابعة كافة تنبيهات الأمان، شاشة القفل، والتهديدات المرصودة</p>
-                </div>
-                <button type="button" class="outline-btn" id="markAll"><i class="fa-solid fa-check-double"></i> تعليم الكل كمقروء</button>
-            </div>
-
-            <!-- معاينة شاشة القفل -->
-            <div class="section-box lock-box">
-                <h3><i class="fa-solid fa-mobile-screen-button" style="color:#7c3aed;"></i> معاينة إشعار شاشة القفل</h3>
-                <p class="hint">هكذا سيظهر تنبيه الطوارئ للمستخدم على شاشة قفل الهاتف:</p>
-                <div class="lock-card t-danger" style="border-right:4px solid var(--c);">
-                    <div style="display:flex;align-items:center;gap:12px;">
-                        <div class="notif" style="padding:0;background:none;border:none;">
-                            <div class="ico"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                        </div>
-                        <div>
-                            <div class="app">Safe Guard</div>
-                            <strong style="font-size:14px;">تنبيه أمني عاجل</strong>
-                            <p style="font-size:12px;color:#cbd5e1;margin-top:2px;">تم رصد محاولة وصول غير مألوفة، انقر للتفاصيل.</p>
-                        </div>
-                    </div>
-                    <span style="font-size:11px;color:#8c85a3;">الآن</span>
-                </div>
-            </div>
-
-            <!-- الإشعارات -->
-            {% if not alerts %}
-                {% set alerts = [
-                    {'type': 'danger', 'title': 'تنبيه طوارئ فوري', 'desc': 'تم رصد محاولة دخول مشبوهة من جهاز غير معرّف.', 'time': 'منذ 5 دقائق'},
-                    {'type': 'safe',   'title': 'اكتمال الفحص التلقائي', 'desc': 'تم فحص جميع التطبيقات والملفات بنجاح، النظام آمن.', 'time': 'منذ ساعة'},
-                    {'type': 'info',   'title': 'تحديث قاعدة البيانات', 'desc': 'تم تحديث قواعد بيانات الحماية لأحدث إصدار بنجاح.', 'time': 'منذ 3 ساعات'}
-                ] %}
-            {% endif %}
+            <h1>{{ t('notif.title') }}</h1>
+            <p class="subtitle">{{ t('notif.subtitle') }}</p>
 
             <div class="section-box">
-                <h3>الإشعارات الحديثة</h3>
+                <div class="toolbar">
+                    <h3 style="margin:0;">{{ t('notif.recent') }}</h3>
+                    <form method="POST" style="margin:0;">
+                        <button class="btn ghost" type="submit"><i class="fa-solid fa-check-double"></i> {{ t('notif.mark_all') }}</button>
+                    </form>
+                </div>
 
                 <div class="tabs" id="tabs">
-                    <button type="button" class="tab active" data-filter="all">الكل <span class="count">{{ alerts|length }}</span></button>
-                    <button type="button" class="tab" data-filter="danger">🚨 طوارئ</button>
-                    <button type="button" class="tab" data-filter="safe">✅ أمان</button>
-                    <button type="button" class="tab" data-filter="info">ℹ️ عام</button>
+                    <button type="button" class="tab active" data-filter="all">{{ t('notif.filter_all') }} <span class="count">{{ alerts|length }}</span></button>
+                    <button type="button" class="tab" data-filter="danger">{{ t('notif.filter_danger') }}</button>
+                    <button type="button" class="tab" data-filter="info">{{ t('notif.filter_info') }}</button>
                 </div>
 
                 <div class="notif-list" id="list">
                     {% for alert in alerts %}
-                    {% set t = alert.type if alert.type in ['danger', 'safe'] else 'info' %}
-                    <div class="notif t-{{ t }} {{ 'unread' if loop.index <= 2 else '' }}" data-type="{{ t }}">
+                    {% set kind = alert.type if alert.type in ['danger', 'info'] else 'info' %}
+                    <div class="notif t-{{ kind }}" data-type="{{ kind }}">
                         <div class="ico">
-                            {% if t == 'danger' %}<i class="fa-solid fa-circle-exclamation"></i>
-                            {% elif t == 'safe' %}<i class="fa-solid fa-circle-check"></i>
+                            {% if kind == 'danger' %}<i class="fa-solid fa-triangle-exclamation"></i>
                             {% else %}<i class="fa-solid fa-circle-info"></i>{% endif %}
                         </div>
                         <div class="body">
@@ -121,7 +64,7 @@
                         <span class="time">{{ alert.time }}</span>
                     </div>
                     {% endfor %}
-                    <div class="empty" id="empty">لا توجد إشعارات في هذا القسم</div>
+                    <div class="empty" id="empty" {% if alerts %}style="display:none;"{% endif %}>{{ t('notif.empty') }}</div>
                 </div>
             </div>
         </main>
@@ -139,15 +82,11 @@
                 var f = tab.dataset.filter, shown = 0;
                 items.forEach(function (it) {
                     var show = (f === 'all' || it.dataset.type === f);
-                    it.style.display = show ? '' : 'none';
+                    it.style.display = show ? 'flex' : 'none';
                     if (show) shown++;
                 });
                 empty.style.display = shown ? 'none' : 'block';
             });
-        });
-
-        document.getElementById('markAll').addEventListener('click', function () {
-            items.forEach(function (it) { it.classList.remove('unread'); });
         });
     </script>
 </body>

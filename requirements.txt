@@ -1,4 +1,10 @@
-flask
-flask-sqlalchemy
+Flask
+Flask-SQLAlchemy
+SQLAlchemy
 requests
+python-dotenv
+itsdangerous
+Werkzeug
 gunicorn
+qrcode
+Pillow

@@ -1,71 +1,104 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="{{ lang }}" dir="{{ dir }}">
 <head>
     <meta charset="UTF-8">
-    <title>Safe Guard - الإعدادات</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>{{ app_name }} - {{ t('nav.settings') }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .box { background: #20173e; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 20px; margin-bottom: 18px; }
+        .box h3 { font-size: 16px; margin-bottom: 14px; }
+        .item { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,.06); }
+        .item:last-child { border-bottom: 0; }
+        .item strong { font-size: 14px; display: block; margin-bottom: 3px; }
+        .item p { font-size: 12px; color: #8c85a3; line-height: 1.7; }
+        .msg { border-radius: 10px; padding: 12px 14px; margin-bottom: 16px; font-size: 14px; }
+        .msg.ok { background: rgba(76,175,80,.14); border: 1px solid rgba(76,175,80,.45); color: #86efac; }
+        .msg.err { background: rgba(217,83,79,.14); border: 1px solid rgba(217,83,79,.45); color: #f87171; }
+        select { background: #171030; border: 1px solid rgba(255,255,255,.15); color: #fff; border-radius: 9px; padding: 10px 12px; font-family: inherit; font-size: 14px; }
+        .btn { border: 0; border-radius: 9px; padding: 11px 20px; font-family: inherit; font-size: 14px; font-weight: bold; cursor: pointer; background: #6C5CE7; color: #fff; }
+        .btn.danger { background: linear-gradient(135deg, #dc2626, #b91c1c); display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+        .muted { font-size: 12px; color: #8c85a3; }
+    </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- الشريط الجانبي الثابت -->
         <aside class="sidebar">
             <div class="brand-container">
-                <span class="brand-name">Safe Guard</span>
+                <span class="brand-name">{{ app_name }}</span>
                 <div class="brand-logo-box"><i class="fa-solid fa-shield-halved"></i></div>
             </div>
             <nav class="sidebar-nav">
-                <a href="/" class="nav-link"><span class="nav-label">لوحة التحكم</span><i class="fa-solid fa-table-cells-large nav-icon"></i></a>
-                <a href="/scan" class="nav-link"><span class="nav-label">الفحص والحماية</span><i class="fa-regular fa-shield-check nav-icon"></i></a>
-                <a href="/subscriptions" class="nav-link"><span class="nav-label">الاشتراكات</span><i class="fa-solid fa-gem nav-icon"></i></a>
-                <a href="/profile" class="nav-link"><span class="nav-label">صفحة المستخدم</span><i class="fa-regular fa-user nav-icon"></i></a>
-                <a href="/parental" class="nav-link"><span class="nav-label">الرقابة الوالدية</span><i class="fa-solid fa-users nav-icon"></i></a>
-                <a href="/notifications" class="nav-link"><span class="nav-label">الإشعارات والتنبيهات</span><i class="fa-solid fa-bell nav-icon"></i></a>
-                <a href="/settings" class="nav-link active"><span class="nav-label">الإعدادات</span><i class="fa-solid fa-sun nav-icon"></i></a>
+                <a href="/" class="nav-link"><span class="nav-label">{{ t('nav.dashboard') }}</span><i class="fa-solid fa-table-cells-large nav-icon"></i></a>
+                <a href="/scan" class="nav-link"><span class="nav-label">{{ t('nav.scan_protection') }}</span><i class="fa-solid fa-magnifying-glass nav-icon"></i></a>
+                <a href="/sos" class="nav-link"><span class="nav-label">{{ t('nav.sos_location') }}</span><i class="fa-solid fa-location-crosshairs nav-icon"></i></a>
+                <a href="/subscriptions" class="nav-link"><span class="nav-label">{{ t('nav.subscriptions') }}</span><i class="fa-solid fa-gem nav-icon"></i></a>
+                <a href="/parental" class="nav-link"><span class="nav-label">{{ t('nav.parental') }}</span><i class="fa-solid fa-users nav-icon"></i></a>
+                <a href="/notifications" class="nav-link"><span class="nav-label">{{ t('nav.notifications') }}</span><i class="fa-solid fa-bell nav-icon"></i></a>
+                <a href="/profile" class="nav-link"><span class="nav-label">{{ t('nav.profile') }}</span><i class="fa-regular fa-user nav-icon"></i></a>
+                <a href="/settings" class="nav-link active"><span class="nav-label">{{ t('nav.settings') }}</span><i class="fa-solid fa-gear nav-icon"></i></a>
             </nav>
         </aside>
 
-        <!-- المحتوى الرئيسي للإعدادات -->
         <main class="main-content">
-            <h1>إعدادات النظام والحساب</h1>
-            <p class="subtitle">التحكم في إعدادات التطبيق، الأمان، وإدارة الجلسة</p>
+            <h1>{{ t('settings.title') }}</h1>
+            <p class="subtitle">{{ t('settings.subtitle') }}</p>
 
-            <div class="bottom-sections">
-                <!-- قسم تفضيلات الأمان -->
-                <div class="section-box" style="flex: 2;">
-                    <h3>تفضيلات الحماية والأمان</h3>
-                    <form method="POST">
-                        <div class="activity-item" style="margin-bottom: 20px;">
-                            <div>
-                                <strong>تفعيل التنبيهات الفورية</strong>
-                                <p style="font-size: 12px; color: #8c85a3;">استلام إشعارات الطوارئ على الجهاز</p>
-                            </div>
-                            <input type="checkbox" name="notifications" class="toggle-switch" checked>
+            {% if settings_saved %}<div class="msg ok"><i class="fa-solid fa-circle-check"></i> {{ t('settings.saved') }}</div>{% endif %}
+            {% if error %}<div class="msg err">{{ error }}</div>{% endif %}
+
+            <form method="POST">
+                <div class="box">
+                    <h3><i class="fa-solid fa-sliders" style="color:#a78bfa;"></i> {{ t('settings.general') }}</h3>
+                    <div class="item">
+                        <div>
+                            <strong>{{ t('settings.lang') }}</strong>
+                            <p>{{ t('settings.lang_hint') }}</p>
                         </div>
-                        <hr class="divider">
-                        <div class="activity-item" style="margin-top: 20px; margin-bottom: 20px;">
-                            <div>
-                                <strong>الفحص التلقائي عند بدء التشغيل</strong>
-                                <p style="font-size: 12px; color: #8c85a3;">فحص التطبيقات والملفات تلقائياً</p>
-                            </div>
-                            <input type="checkbox" class="toggle-switch" checked>
-                        </div>
-                        <button type="submit" class="purple-btn">حفظ الإعدادات</button>
-                    </form>
+                        <select name="lang">
+                            {% for code, label in langs %}
+                            <option value="{{ code }}" {% if user.lang == code %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
 
-                <!-- قسم إدارة الجلسة وتسجيل الخروج -->
-                <div class="section-box" style="flex: 1; border-color: rgba(220, 38, 38, 0.2);">
-                    <h3>إدارة الجلسة والحساب</h3>
-                    <p style="font-size: 13px; color: #8c85a3; margin-bottom: 20px;">يمكنك تسجيل الخروج من الحساب الحالي بأمان.</p>
-                    
-                    <a href="{{ url_for('logout') }}" style="text-decoration: none;">
-                        <button type="button" class="purple-btn" style="background: linear-gradient(135deg, #dc2626, #b91c1c); width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                            <i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج
-                        </button>
-                    </a>
+                <div class="box">
+                    <h3><i class="fa-solid fa-bell" style="color:#a78bfa;"></i> {{ t('settings.notifications') }}</h3>
+                    <div class="item">
+                        <div>
+                            <strong>{{ t('settings.notify_sos') }}</strong>
+                            <p>{{ t('settings.notify_sos_hint') }}</p>
+                        </div>
+                        <input type="checkbox" name="notify_sos" class="toggle-switch"
+                               {% if user.notify_sos %}checked{% endif %}>
+                    </div>
+                    <div class="item">
+                        <div>
+                            <strong>{{ t('settings.notify_scans') }}</strong>
+                            <p>{{ t('settings.notify_scans_hint') }}</p>
+                        </div>
+                        <input type="checkbox" name="notify_scans" class="toggle-switch"
+                               {% if user.notify_scans %}checked{% endif %}>
+                    </div>
                 </div>
+
+                <button type="submit" class="btn"><i class="fa-solid fa-floppy-disk"></i> {{ t('common.save') }}</button>
+            </form>
+
+            <div class="box" style="margin-top:18px;">
+                <h3><i class="fa-solid fa-right-from-bracket" style="color:#f87171;"></i> {{ t('settings.session') }}</h3>
+                <p class="muted" style="margin-bottom:12px;">{{ t('settings.session_hint') }}</p>
+                <a class="btn danger" href="{{ url_for('logout') }}">
+                    <i class="fa-solid fa-right-from-bracket"></i> {{ t('nav.logout') }}
+                </a>
             </div>
+
+            <p class="muted">
+                <a href="{{ url_for('privacy') }}">{{ t('nav.privacy') }}</a> ·
+                {{ t('subs.support') }}: <a href="mailto:{{ support_email }}">{{ support_email }}</a>
+            </p>
         </main>
     </div>
 </body>

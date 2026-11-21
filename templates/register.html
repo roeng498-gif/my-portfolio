@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}" dir="{{ dir }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>{{ app_name }} - {{ t('reg.title') }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .auth-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .auth-card { width: 100%; max-width: 440px; background: #16102e; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; padding: 30px 26px; }
+        .auth-logo { width: 54px; height: 54px; margin: 0 auto 12px; border-radius: 14px; background: #6C5CE7; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #fff; }
+        .auth-card h1 { text-align: center; font-size: 21px; margin-bottom: 6px; }
+        .auth-card .subtitle { text-align: center; margin-bottom: 20px; }
+        .auth-card label { display: block; font-size: 13px; color: #a29db5; margin-bottom: 6px; }
+        .auth-card input, .auth-card select { width: 100%; box-sizing: border-box; padding: 12px; margin-bottom: 14px; background: #20173e; border: 1px solid rgba(255,255,255,.1); color: #fff; border-radius: 10px; font-family: inherit; font-size: 15px; }
+        .auth-card input:focus { outline: 2px solid #8B5CF6; border-color: transparent; }
+        .auth-btn { width: 100%; min-height: 48px; border: 0; border-radius: 10px; background: #6C5CE7; color: #fff; font-family: inherit; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 4px; }
+        .auth-error { background: rgba(217,83,79,.15); border: 1px solid rgba(217,83,79,.5); color: #f87171; padding: 10px 14px; border-radius: 10px; font-size: 14px; margin-bottom: 14px; }
+        .auth-alt { text-align: center; margin-top: 16px; font-size: 14px; color: #a29db5; }
+        .auth-alt a { color: #C4B5FD; text-decoration: none; font-weight: bold; }
+        .row2 { display: flex; gap: 10px; }
+        .row2 > div { flex: 1; }
+        .hint { font-size: 12px; color: #8c85a3; margin: -8px 0 12px; }
+    </style>
+</head>
+<body>
+    <div class="auth-wrap">
+        <form class="auth-card" method="POST" autocomplete="on">
+            <div class="auth-logo"><i class="fa-solid fa-user-plus"></i></div>
+            <h1>{{ t('reg.title') }}</h1>
+            <p class="subtitle">{{ t('reg.subtitle') }}</p>
+
+            {% if error %}<div class="auth-error" role="alert">{{ error }}</div>{% endif %}
+
+            <label for="username">{{ t('reg.username') }}</label>
+            <input id="username" type="text" name="username" value="{{ form.username }}" autocomplete="username" minlength="3" maxlength="40" required autofocus>
+
+            <label for="email">{{ t('reg.email') }}</label>
+            <input id="email" type="email" name="email" value="{{ form.email }}" autocomplete="email">
+
+            <div class="row2">
+                <div>
+                    <label for="country">{{ t('reg.country') }}</label>
+                    <select id="country" name="country" required>
+                        {% for code, c in countries.items() %}
+                        <option value="{{ code }}" {% if form.country == code %}selected{% endif %}>{{ c[0] if lang == 'ar' else c[3] }} (+{{ c[1] }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="role">{{ t('reg.role') }}</label>
+                    <select id="role" name="role">
+                        <option value="parent" {% if form.role == 'parent' %}selected{% endif %}>{{ t('role.parent') }}</option>
+                        <option value="child" {% if form.role == 'child' %}selected{% endif %}>{{ t('role.child') }}</option>
+                    </select>
+                </div>
+            </div>
+
+            <label for="phone">{{ t('reg.phone') }}</label>
+            <input id="phone" type="tel" name="phone" value="{{ form.phone }}" autocomplete="tel" dir="ltr" required>
+            <p class="hint">01xxxxxxxxx</p>
+
+            <label for="password">{{ t('reg.password') }}</label>
+            <input id="password" type="password" name="password" autocomplete="new-password" minlength="8" required>
+
+            <label for="confirm">{{ t('reg.confirm') }}</label>
+            <input id="confirm" type="password" name="confirm" autocomplete="new-password" minlength="8" required>
+
+            <button type="submit" class="auth-btn">{{ t('reg.btn') }}</button>
+
+            <p class="auth-alt">{{ t('reg.have_account') }} <a href="{{ url_for('login') }}">{{ t('reg.login') }}</a></p>
+        </form>
+    </div>
+</body>
+</html>

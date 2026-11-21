@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html lang="{{ lang }}" dir="{{ dir }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>{{ app_name }} - {{ t('link.consent_title') }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .auth-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .auth-card { width: 100%; max-width: 460px; background: #16102e; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; padding: 32px 28px; }
+        .auth-logo { width: 56px; height: 56px; margin: 0 auto 14px; border-radius: 14px; background: #6C5CE7; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #fff; }
+        .auth-card h1 { text-align: center; font-size: 21px; margin-bottom: 8px; }
+        .auth-card p.sub { text-align: center; color: #a29db5; font-size: 14px; margin-bottom: 20px; line-height: 1.8; }
+        .consent { background: rgba(139,92,246,.12); border: 1px solid rgba(139,92,246,.35); border-radius: 12px; padding: 14px; font-size: 14px; line-height: 1.9; color: #ddd6fe; margin-bottom: 18px; }
+        .auth-btn { width: 100%; min-height: 48px; border: 0; border-radius: 10px; background: #6C5CE7; color: #fff; font-family: 'Cairo', sans-serif; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .auth-btn.ghost { background: transparent; border: 1px solid rgba(255,255,255,.25); color: #fff; margin-bottom: 10px; text-decoration: none; display: block; text-align: center; line-height: 46px; }
+        .msg { padding: 10px 14px; border-radius: 10px; font-size: 14px; margin-bottom: 16px; }
+        .msg.err { background: rgba(217,83,79,.15); border: 1px solid rgba(217,83,79,.5); color: #f87171; }
+        .msg.ok { background: rgba(76,175,80,.15); border: 1px solid rgba(76,175,80,.5); color: #4CAF50; }
+        .meta { display: flex; justify-content: space-between; font-size: 13px; color: #8b86a3; margin-bottom: 16px; }
+        .footer-link { text-align: center; margin-top: 16px; font-size: 13px; }
+        .footer-link a { color: #C4B5FD; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="auth-wrap">
+        <div class="auth-card">
+            <div class="auth-logo"><i class="fa-solid fa-user-shield"></i></div>
+            <h1>{{ t('link.consent_title') }}</h1>
+            <p class="sub">
+                {% if guardian %}{{ guardian.username }} â€” {{ t('role.parent') }}{% endif %}
+            </p>
+
+            {% if error %}<div class="msg err" role="alert">{{ error }}</div>{% endif %}
+            {% if message %}<div class="msg ok" role="status">{{ message }}</div>{% endif %}
+
+            <div class="meta">
+                <span>{{ t('common.done') }}: {{ invite.code }}</span>
+                <span><i class="fa-regular fa-clock"></i> {{ invite.expires_at.strftime('%Y-%m-%d %H:%M') }}</span>
+            </div>
+
+            {% if invite.status == 'pending' %}
+                <div class="consent">{{ consent_text }}</div>
+                {% if user %}
+                    <form method="POST">
+                        <input type="hidden" name="consent_version" value="{{ consent_version }}">
+                        <button type="submit" class="auth-btn">{{ t('link.consent_title') }}</button>
+                    </form>
+                {% else %}
+                    <a class="auth-btn" href="{{ url_for('login', next=url_for('invite_page', code=invite.code)) }}">
+                        {{ t('auth.login_required') }}
+                    </a>
+                    <a class="auth-btn ghost" href="{{ url_for('register') }}">{{ t('nav.register') }}</a>
+                {% endif %}
+            {% elif invite.status == 'accepted' %}
+                <div class="msg ok">{{ t('link.invite_pending') }}</div>
+            {% elif invite.status == 'approved' %}
+                <div class="msg ok">{{ t('link.invite_approved') }}</div>
+            {% else %}
+                <div class="msg err">{{ t('link.invite_expired') }}</div>
+            {% endif %}
+
+            <p class="footer-link"><a href="{{ url_for('privacy') }}">{{ t('nav.privacy') }}</a></p>
+        </div>
+    </div>
+</body>
+</html>

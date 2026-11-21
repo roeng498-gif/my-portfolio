@@ -1,89 +1,73 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="{{ lang }}" dir="{{ dir }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Safe Guard - زر الطوارئ والموقع</title>
+    <title>{{ app_name }} - {{ t('sos.page_title') }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
-        .sos-container { text-align: center; max-width: 600px; margin: 30px auto; background: #1e1b4b; padding: 35px 25px; border-radius: 20px; box-shadow: 0 4px 25px rgba(0,0,0,.4); }
-        .sos-btn { width: 180px; height: 180px; border-radius: 50%; background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; border: 8px solid rgba(239,68,68,.3); font-size: 32px; font-weight: bold; font-family: 'Cairo'; box-shadow: 0 0 30px rgba(239,68,68,.6); transition: .3s; margin: 20px auto; display: flex; align-items: center; justify-content: center; flex-direction: column; }
-        .sos-btn:hover { transform: scale(1.05); box-shadow: 0 0 45px rgba(239,68,68,.9); }
+        .sos-container { text-align: center; max-width: 600px; margin: 10px auto; background: #1e1b4b; padding: 30px 24px; border-radius: 20px; }
+        .sos-btn { width: 180px; height: 180px; border-radius: 50%; background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; border: 8px solid rgba(239,68,68,.3); font-size: 32px; font-weight: bold; font-family: inherit; box-shadow: 0 0 30px rgba(239,68,68,.6); transition: .3s; margin: 20px auto; display: flex; align-items: center; justify-content: center; flex-direction: column; cursor: pointer; }
+        .sos-btn:hover { transform: scale(1.05); }
         .sos-btn:disabled { opacity: .7; transform: none; }
         .sos-btn.counting { animation: pulse 1s infinite; font-size: 64px; }
         @keyframes pulse { 50% { box-shadow: 0 0 60px rgba(239,68,68,1); } }
-
         .msg { padding: 14px; border-radius: 10px; margin: 15px 0; font-size: 15px; display: none; }
         .msg.ok { background: rgba(22,163,74,.2); border: 1px solid #16a34a; color: #4ade80; }
         .msg.err { background: rgba(239,68,68,.2); border: 1px solid #ef4444; color: #f87171; }
         .msg.wait { background: rgba(96,165,250,.15); border: 1px solid #60a5fa; color: #93c5fd; }
-
-        .share-box { display: none; background: #0f172a; border-radius: 12px; padding: 16px; margin-top: 15px; text-align: right; }
+        .share-box { display: none; background: #0f172a; border-radius: 12px; padding: 16px; margin-top: 15px; text-align: start; }
         .share-box .label { font-size: 13px; color: #94a3b8; margin-bottom: 8px; }
-        .share-link { width: 100%; direction: ltr; background: #1e293b; color: #cbd5e1; border: 1px solid rgba(255,255,255,.1); border-radius: 8px; padding: 10px; font-size: 12px; }
+        .share-link { width: 100%; box-sizing: border-box; direction: ltr; background: #1e293b; color: #cbd5e1; border: 1px solid rgba(255,255,255,.1); border-radius: 8px; padding: 10px; font-size: 12px; }
         .row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-        .row .btn { flex: 1; min-width: 130px; padding: 11px; border-radius: 10px; border: 1px solid rgba(255,255,255,.25); background: transparent; color: #fff; font-family: 'Cairo'; font-size: 14px; font-weight: bold; text-align: center; text-decoration: none; }
+        .row .btn { flex: 1; min-width: 130px; padding: 11px; border-radius: 10px; border: 1px solid rgba(255,255,255,.25); background: transparent; color: #fff; font-family: inherit; font-size: 14px; font-weight: bold; text-align: center; text-decoration: none; cursor: pointer; }
         .row .btn.wa { background: #16a34a; border: none; }
         .row .btn.stop { border-color: #ef4444; color: #f87171; }
         .live { display: inline-flex; align-items: center; gap: 6px; color: #4ade80; font-size: 13px; margin-top: 12px; }
         .live::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: #4ade80; animation: pulse2 1.2s infinite; }
         @keyframes pulse2 { 50% { opacity: .3; } }
-
-        .cancel-btn { display: none; margin: 0 auto; padding: 10px 28px; border-radius: 10px; border: 1px solid rgba(255,255,255,.3); background: transparent; color: #fff; font-family: 'Cairo'; font-size: 15px; }
-        .info-box { background: #0f172a; padding: 15px; border-radius: 10px; margin-top: 25px; color: #94a3b8; font-size: 14px; border: 1px solid rgba(255,255,255,.05); }
+        .cancel-btn { display: none; margin: 0 auto; padding: 10px 28px; border-radius: 10px; border: 1px solid rgba(255,255,255,.3); background: transparent; color: #fff; font-family: inherit; font-size: 15px; cursor: pointer; }
+        .info-box { background: #0f172a; padding: 15px; border-radius: 10px; margin-top: 22px; color: #94a3b8; font-size: 13.5px; border: 1px solid rgba(255,255,255,.05); text-align: start; line-height: 1.9; }
     </style>
 </head>
 <body data-auto="{{ 'true' if auto_trigger else 'false' }}">
     <div class="app-container">
-        <div class="sidebar">
-            <h2 class="app-title">Safe Guard</h2>
-            <a href="/"><span class="icon">🏠</span> لوحة التحكم</a>
-            <a href="/scan"><span class="icon">🛡️</span> الفحص والحماية</a>
-            <a href="/sos" class="active"><span class="icon">🚨</span> زر الطوارئ</a>
-            <a href="/subscriptions"><span class="icon">💎</span> الاشتراكات</a>
-            <a href="/profile"><span class="icon">👤</span> صفحة المستخدم</a>
-            <a href="/parental"><span class="icon">👨‍👩‍👧‍👦</span> الرقابة الأبوية</a>
-            <a href="/notifications"><span class="icon">🔔</span> الإشعارات</a>
-            <a href="/settings"><span class="icon">⚙️</span> الإعدادات</a>
-        </div>
+        {% set active = 'sos' %}{% include '_nav.html' %}
 
         <main class="main-content">
-            <h1>زر الطوارئ والموقع الجغرافي</h1>
-            <p class="subtitle">إرسال تنبيه استغاثة فوري ومشاركة موقعك مع ولي الأمر</p>
+            <h1>{{ t('sos.page_title') }}</h1>
+            <p class="subtitle">{{ t('sos.page_subtitle') }}</p>
 
             <div class="sos-container">
-                <p id="lead" style="color:#cbd5e1;font-size:16px;">اضغط على الزر في حالات الطوارئ فقط</p>
+                <p id="lead" style="color:#cbd5e1;font-size:16px;">{{ t('sos.lead') }}</p>
 
                 <button type="button" class="sos-btn" id="sosBtn">
                     <i class="fa-solid fa-triangle-exclamation" style="margin-bottom:5px;"></i>
                     <span id="sosLabel">SOS</span>
                 </button>
-                <button type="button" class="cancel-btn" id="cancelBtn">إلغاء</button>
+                <button type="button" class="cancel-btn" id="cancelBtn">{{ t('sos.cancel') }}</button>
 
                 <div class="msg wait" id="msgWait"></div>
                 <div class="msg err" id="msgErr"></div>
-                <div class="msg ok" id="msgOk">
-                    <i class="fa-solid fa-circle-check" style="margin-left:8px;"></i>
-                    تم إرسال إشارة الطوارئ وتحديد موقعك بنجاح!
-                </div>
+                <div class="msg ok" id="msgOk"><i class="fa-solid fa-circle-check"></i> {{ t('sos.sent') }}</div>
 
                 <div class="share-box" id="shareBox">
-                    <div class="label">رابط تتبع الموقع (أرسله لولي الأمر):</div>
+                    <div class="label">{{ t('sos.share_label') }}</div>
                     <input type="text" class="share-link" id="shareLink" readonly>
                     <div class="row">
-                        <a class="btn wa" id="waBtn" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> إرسال عبر واتساب</a>
-                        <button type="button" class="btn" id="copyBtn"><i class="fa-regular fa-copy"></i> نسخ الرابط</button>
+                        <a class="btn wa" id="waBtn" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> {{ t('sos.whatsapp') }}</a>
+                        <button type="button" class="btn" id="copyBtn"><i class="fa-regular fa-copy"></i> {{ t('sos.copy') }}</button>
                     </div>
-                    <div class="live">التتبع المباشر شغال</div>
+                    <div class="live">{{ t('sos.live') }}</div>
                     <div class="row">
-                        <button type="button" class="btn stop" id="stopBtn">إيقاف التتبع</button>
+                        <button type="button" class="btn stop" id="stopBtn">{{ t('sos.stop') }}</button>
                     </div>
                 </div>
 
                 <div class="info-box">
-                    <i class="fa-solid fa-location-dot" style="color:#ef4444;margin-left:5px;"></i>
-                    الحساب الحالي: <strong>{{ user.username }}</strong> — عند الضغط سيطلب المتصفح إذن تحديد الموقع، ثم يبدأ العد التنازلي 3 ثوانٍ (يمكنك الإلغاء).
+                    <i class="fa-solid fa-location-dot" style="color:#ef4444;"></i>
+                    {{ t('sos.info', user=user.username) }}
                 </div>
             </div>
         </main>
@@ -91,6 +75,20 @@
 
     <script>
         var AUTO = document.body.dataset.auto === 'true';
+        var TXT = {
+            lead: {{ t('sos.lead')|tojson }},
+            lead_sent: {{ t('sos.lead_sent')|tojson }},
+            lead_stopped: {{ t('sos.lead_stopped')|tojson }},
+            waiting: {{ t('sos.waiting')|tojson }},
+            err_geo: {{ t('sos.err_geo')|tojson }},
+            err_send: {{ t('sos.err_send')|tojson }},
+            err_conn: {{ t('sos.err_conn')|tojson }},
+            err_denied: {{ t('sos.err_denied')|tojson }},
+            err_timeout: {{ t('sos.err_timeout')|tojson }},
+            err_unknown: {{ t('sos.err_unknown')|tojson }},
+            copied: {{ t('sos.copied')|tojson }},
+            wa_text: {{ t('sos.wa_text')|tojson }}
+        };
 
         var btn = document.getElementById('sosBtn');
         var label = document.getElementById('sosLabel');
@@ -119,7 +117,6 @@
             return { lat: pos.coords.latitude, lng: pos.coords.longitude, accuracy: pos.coords.accuracy };
         }
 
-        // عد تنازلي 3 ثواني عشان الضغط بالغلط
         function startCountdown() {
             if (timer || token) return;
             var n = 3;
@@ -137,34 +134,32 @@
         }
 
         function trigger() {
-            if (!navigator.geolocation) { show(msgErr, 'المتصفح لا يدعم تحديد الموقع.'); return; }
-            show(msgWait, 'جاري تحديد موقعك...');
+            if (!navigator.geolocation) { show(msgErr, TXT.err_geo); return; }
+            show(msgWait, TXT.waiting);
             btn.disabled = true;
             navigator.geolocation.getCurrentPosition(function (pos) {
                 post('/api/sos', coords(pos)).then(function (d) {
-                    if (!d.ok) { btn.disabled = false; show(msgErr, 'تعذر إرسال الإشارة، حاول مرة أخرى.'); return; }
+                    if (!d.ok) { btn.disabled = false; show(msgErr, TXT.err_send); return; }
                     token = d.token;
                     showSent(d.track_url);
                     startWatch();
-                }).catch(function () { btn.disabled = false; show(msgErr, 'تعذر الاتصال بالسيرفر.'); });
+                }).catch(function () { btn.disabled = false; show(msgErr, TXT.err_conn); });
             }, function (err) {
                 btn.disabled = false;
-                if (err.code === 1) show(msgErr, 'تم رفض إذن الموقع. فعّله من إعدادات المتصفح (أيقونة القفل بجانب الرابط) ثم حاول مرة أخرى.');
-                else if (err.code === 3) show(msgErr, 'انتهت مهلة تحديد الموقع، تأكد من تشغيل GPS وحاول مرة أخرى.');
-                else show(msgErr, 'تعذر تحديد موقعك.');
+                if (err.code === 1) show(msgErr, TXT.err_denied);
+                else if (err.code === 3) show(msgErr, TXT.err_timeout);
+                else show(msgErr, TXT.err_unknown);
             }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 });
         }
 
         function showSent(url) {
             show(msgOk);
-            lead.textContent = 'تم إرسال تنبيه الطوارئ';
+            lead.textContent = TXT.lead_sent;
             document.getElementById('shareLink').value = url;
-            var text = 'أنا في حالة طوارئ! تابع موقعي مباشرة من هنا: ' + url;
-            document.getElementById('waBtn').href = 'https://wa.me/?text=' + encodeURIComponent(text);
+            document.getElementById('waBtn').href = 'https://wa.me/?text=' + encodeURIComponent(TXT.wa_text + url);
             shareBox.style.display = 'block';
         }
 
-        // تتبع مستمر: نبعت الموقع كل 8 ثواني على الأقل
         function startWatch() {
             watchId = navigator.geolocation.watchPosition(function (pos) {
                 var now = Date.now();
@@ -180,7 +175,7 @@
             if (token) post('/api/sos/' + token + '/stop');
             token = null;
             shareBox.style.display = 'none';
-            lead.textContent = 'تم إيقاف التتبع. اضغط على الزر في حالات الطوارئ فقط';
+            lead.textContent = TXT.lead_stopped;
             resetButton(); show(null);
         }
 
@@ -191,10 +186,9 @@
             var inp = document.getElementById('shareLink');
             inp.select();
             if (navigator.clipboard) navigator.clipboard.writeText(inp.value); else document.execCommand('copy');
-            this.textContent = 'تم النسخ ✓';
+            this.textContent = TXT.copied;
         });
 
-        // لو جاي من زر "تنبيه طوارئ فوري" في لوحة التحكم
         if (AUTO) startCountdown();
     </script>
 </body>

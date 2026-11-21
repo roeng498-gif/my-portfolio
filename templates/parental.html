@@ -1,83 +1,184 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="{{ lang }}" dir="{{ dir }}">
 <head>
     <meta charset="UTF-8">
-    <title>Safe Guard - الرقابة الوالدية</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>{{ app_name }} - {{ t('nav.parental') }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .box { background: #20173e; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 20px; margin-bottom: 18px; }
+        .box h3 { font-size: 16px; margin-bottom: 6px; }
+        .box p.hint { font-size: 13px; color: #a29db5; line-height: 1.8; margin-bottom: 12px; }
+        .msg { border-radius: 10px; padding: 12px 14px; margin-bottom: 16px; font-size: 14px; }
+        .msg.ok { background: rgba(76,175,80,.14); border: 1px solid rgba(76,175,80,.45); color: #86efac; }
+        .msg.err { background: rgba(217,83,79,.14); border: 1px solid rgba(217,83,79,.45); color: #f87171; }
+        .code-big { font-size: 38px; letter-spacing: 8px; font-weight: bold; color: #C4B5FD; text-align: center; margin: 12px 0; direction: ltr; }
+        .link-row { display: flex; gap: 8px; align-items: center; background: #171030; border: 1px solid rgba(255,255,255,.08); border-radius: 9px; padding: 9px 12px; font-size: 12.5px; color: #a29db5; word-break: break-all; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+        .card { background: #1c1438; border: 1px solid rgba(124,58,237,.3); border-radius: 14px; padding: 16px; }
+        .card h4 { color: #a78bfa; font-size: 15px; margin-bottom: 10px; }
+        .row { display: flex; justify-content: space-between; font-size: 13px; color: #cbd5e1; padding: 4px 0; }
+        .btn { border: 0; border-radius: 9px; padding: 9px 14px; font-family: inherit; font-size: 13px; font-weight: bold; cursor: pointer; background: #6C5CE7; color: #fff; }
+        .btn.ghost { background: transparent; border: 1px solid rgba(255,255,255,.25); color: #e2e8f0; }
+        .btn.danger { background: transparent; border: 1px solid rgba(239,68,68,.6); color: #fca5a5; }
+        .btn.link { background: #16a34a; }
+        .actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+        .badge { font-size: 11px; padding: 3px 9px; border-radius: 10px; background: rgba(76,175,80,.18); color: #4ade80; }
+        .badge.warn { background: rgba(234,179,8,.18); color: #facc15; }
+        .badge.danger { background: rgba(239,68,68,.18); color: #f87171; }
+        input[type=text] { width: 100%; padding: 11px 12px; background: #171030; border: 1px solid rgba(255,255,255,.12); border-radius: 9px; color: #fff; font-family: inherit; font-size: 16px; letter-spacing: 3px; text-align: center; direction: ltr; }
+        .empty { font-size: 13px; color: #8b86a3; padding: 10px 0; }
+    </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- الشريط الجانبي الثابت -->
         <aside class="sidebar">
             <div class="brand-container">
-                <span class="brand-name">Safe Guard</span>
+                <span class="brand-name">{{ app_name }}</span>
                 <div class="brand-logo-box"><i class="fa-solid fa-shield-halved"></i></div>
             </div>
             <nav class="sidebar-nav">
-                <a href="/" class="nav-link"><span class="nav-label">لوحة التحكم</span><i class="fa-solid fa-table-cells-large nav-icon"></i></a>
-                <a href="/scan" class="nav-link"><span class="nav-label">الفحص والحماية</span><i class="fa-regular fa-shield-check nav-icon"></i></a>
-                <a href="/sos" class="nav-link"><span class="nav-label">زر الطوارئ والموقع</span><i class="fa-solid fa-location-crosshairs nav-icon"></i></a>
-                <a href="/subscriptions" class="nav-link"><span class="nav-label">الاشتراكات</span><i class="fa-solid fa-gem nav-icon"></i></a>
-                <a href="/profile" class="nav-link"><span class="nav-label">صفحة المستخدم</span><i class="fa-regular fa-user nav-icon"></i></a>
-                <a href="/parental" class="nav-link active"><span class="nav-label">الرقابة الوالدية</span><i class="fa-solid fa-users nav-icon"></i></a>
-                <a href="/notifications" class="nav-link"><span class="nav-label">الإشعارات والتنبيهات</span><i class="fa-solid fa-bell nav-icon"></i></a>
-                <a href="/settings" class="nav-link"><span class="nav-label">الإعدادات</span><i class="fa-solid fa-sun nav-icon"></i></a>
+                <a href="/" class="nav-link"><span class="nav-label">{{ t('nav.dashboard') }}</span><i class="fa-solid fa-table-cells-large nav-icon"></i></a>
+                <a href="/scan" class="nav-link"><span class="nav-label">{{ t('nav.scan_protection') }}</span><i class="fa-solid fa-magnifying-glass nav-icon"></i></a>
+                <a href="/sos" class="nav-link"><span class="nav-label">{{ t('nav.sos_location') }}</span><i class="fa-solid fa-location-crosshairs nav-icon"></i></a>
+                <a href="/subscriptions" class="nav-link"><span class="nav-label">{{ t('nav.subscriptions') }}</span><i class="fa-solid fa-gem nav-icon"></i></a>
+                <a href="/parental" class="nav-link active"><span class="nav-label">{{ t('nav.parental') }}</span><i class="fa-solid fa-users nav-icon"></i></a>
+                <a href="/notifications" class="nav-link"><span class="nav-label">{{ t('nav.notifications') }}</span><i class="fa-solid fa-bell nav-icon"></i></a>
+                <a href="/profile" class="nav-link"><span class="nav-label">{{ t('nav.profile') }}</span><i class="fa-regular fa-user nav-icon"></i></a>
+                <a href="/settings" class="nav-link"><span class="nav-label">{{ t('nav.settings') }}</span><i class="fa-solid fa-gear nav-icon"></i></a>
             </nav>
         </aside>
 
-        <!-- المحتوى الرئيسي للرقابة الوالدية -->
         <main class="main-content">
-            <h1>نظام الرقابة الوالدية الذكي</h1>
-            <p class="subtitle">متابعة أجهزة الأبناء وحمايتهم في الوقت الفعلي</p>
+            <h1>{{ t('parental.title') }}</h1>
+            <p class="subtitle">{{ t('parental.subtitle') }}</p>
 
-            {% if user and user.role == 'child' %}
-                <!-- واجهة خاصة بحساب الطفل -->
-                <div class="section-box" style="text-align: center; padding: 40px; background: rgba(76, 175, 80, 0.05); border: 1px solid rgba(76, 175, 80, 0.3);">
-                    <div style="font-size: 50px; color: #4CAF50; margin-bottom: 15px;">
-                        <i class="fa-solid fa-shield-heart"></i>
-                    </div>
-                    <h3 style="color: #4CAF50; margin-bottom: 10px;">جهازك محمي ومرتبط بولي الأمر</h3>
-                    <p style="font-size: 14px; color: #a29db5; max-width: 500px; margin: 0 auto 20px auto;">
-                        هذا الجهاز مسجل في النظام كـ <strong style="color: #fff;">"طفل"</strong>. يتمتع بكافة ميزات الأمان وتنبيهات الطوارئ ومشاركة الموقع مع ولي الأمر للحفاظ على سلامتك.
-                    </p>
-                    <span style="background: #100b20; padding: 8px 20px; border-radius: 20px; font-size: 13px; border: 1px solid #4CAF50; color: #4CAF50;">الحالة: تحت الحماية والرعاية</span>
+            {% if message %}<div class="msg ok"><i class="fa-solid fa-circle-check"></i> {{ message }}</div>{% endif %}
+            {% if error %}<div class="msg err"><i class="fa-solid fa-circle-exclamation"></i> {{ error }}</div>{% endif %}
+
+            {% if user.role == 'parent' %}
+                <!-- دعوة ربط جديدة -->
+                <div class="box">
+                    <h3><i class="fa-solid fa-user-plus" style="color:#a78bfa;"></i> {{ t('parental.invite_title') }}</h3>
+                    <p class="hint">{{ t('parental.invite_hint') }}</p>
+                    {% if pair_code %}
+                        <div class="code-big">{{ pair_code }}</div>
+                        <div class="link-row">
+                            <i class="fa-solid fa-link"></i>
+                            <span>{{ invite_web_link }}</span>
+                        </div>
+                    {% endif %}
+                    <form method="POST" class="actions">
+                        <input type="hidden" name="action" value="invite">
+                        <button type="submit" class="btn"><i class="fa-solid fa-qrcode"></i> {{ t('parental.invite_btn') }}</button>
+                    </form>
                 </div>
 
-            {% else %}
-                <!-- واجهة خاصة بحساب ولي الأمر (المدير) -->
-                <div class="section-box" style="margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; background: #20173e; border: 1px solid rgba(124, 58, 237, 0.3);">
-                    <div>
-                        <h3 style="margin-bottom: 5px;">إدارة أجهزة الأبناء</h3>
-                        <p style="font-size: 13px; color: #a29db5;">يمكنك ربط ومتابعة حالة أجهزة أطفالك وتلقي تنبيهات الطوارئ الخاصة بهم</p>
+                <!-- الدعوات المعلقة -->
+                {% if pending %}
+                <div class="box">
+                    <h3>{{ t('parental.pending_title') }}</h3>
+                    {% for inv in pending %}
+                    <div class="card" style="margin-top:10px;">
+                        <div class="row">
+                            <span><strong>{{ inv.code }}</strong></span>
+                            <span class="badge warn">{{ inv.status }}</span>
+                        </div>
+                        <div class="row">
+                            <span>{{ inv.expires_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                            <span>{{ inv.protected_id and t('link.invite_pending') or t('parental.waiting_child') }}</span>
+                        </div>
+                        <div class="actions">
+                            <form method="POST">
+                                <input type="hidden" name="action" value="approve">
+                                <input type="hidden" name="code" value="{{ inv.code }}">
+                                <button class="btn link" type="submit">{{ t('parental.approve') }}</button>
+                            </form>
+                            <form method="POST">
+                                <input type="hidden" name="action" value="reject">
+                                <input type="hidden" name="code" value="{{ inv.code }}">
+                                <button class="btn danger" type="submit">{{ t('parental.reject') }}</button>
+                            </form>
+                        </div>
                     </div>
-                    <button type="button" class="purple-btn" onclick="alert('خاصية إضافة جهاز طفل جديد قيد التفعيل عبر رمز الاقتران')">
-                        <i class="fa-solid fa-plus" style="margin-left: 5px;"></i> إضافة جهاز طفل
-                    </button>
+                    {% endfor %}
                 </div>
+                {% endif %}
 
-                <!-- قائمة الأجهزة المرتبطة افتراضياً -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
-                    
-                    <!-- جهاز طفل 1 -->
-                    <div class="section-box" style="display: flex; flex-direction: column; justify-content: space-between;">
-                        <div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                                <h4 style="color: #a78bfa; font-size: 16px;"><i class="fa-solid fa-mobile-screen" style="margin-left: 6px;"></i> هاتف أحمد (الابن)</h4>
-                                <span style="background: rgba(76, 175, 80, 0.2); color: #4CAF50; font-size: 11px; padding: 4px 10px; border-radius: 12px;">آمن ومتصل</span>
+                <!-- الأطفال المرتبطون -->
+                <div class="box">
+                    <h3>{{ t('parental.children_title') }}</h3>
+                    {% if not protected %}<p class="empty">{{ t('parental.no_children') }}</p>{% endif %}
+                    <div class="grid">
+                        {% for child in protected %}
+                        <div class="card">
+                            <h4><i class="fa-solid fa-mobile-screen"></i> {{ child.username }}</h4>
+                            {% if child.event %}
+                                <span class="badge danger">{{ t('sos.active') }}</span>
+                            {% else %}
+                                <span class="badge">{{ t('parental.safe') }}</span>
+                            {% endif %}
+                            <div class="row"><span>{{ t('parental.last_scan') }}</span><span>{{ child.last_scan or t('time.never') }}</span></div>
+                            <div class="row"><span>{{ t('parental.apps') }}</span><span>{{ child.report_count or (child.names|length) }}</span></div>
+                            <div class="row"><span>{{ t('parental.ads') }}</span>
+                                <span>{{ t('parental.ads_on') if child.ads and child.ads.enabled else t('parental.ads_off') }}</span>
                             </div>
-                            <ul style="list-style: none; padding: 0; font-size: 13px; color: #a29db5; line-height: 2.2;">
-                                <li><i class="fa-solid fa-battery-three-quarters" style="color: #a78bfa; margin-left: 8px;"></i> البطارية: 82%</li>
-                                <li><i class="fa-solid fa-location-dot" style="color: #ef4444; margin-left: 8px;"></i> الموقع: مدرسة النيل (نشط)</li>
-                                <li><i class="fa-solid fa-shield-check" style="color: #4CAF50; margin-left: 8px;"></i> التطبيقات المفحوصة: سليمة</li>
-                            </ul>
+                            <div class="actions">
+                                {% if child.event %}
+                                    <a class="btn link" href="{{ child.track_url }}"><i class="fa-solid fa-location-dot"></i> {{ t('parental.track') }}</a>
+                                {% endif %}
+                                <form method="POST" onsubmit="return confirm('{{ t('parental.remove_confirm') }}');">
+                                    <input type="hidden" name="action" value="remove">
+                                    <input type="hidden" name="link_id" value="{{ child.link_id }}">
+                                    <button class="btn danger" type="submit">{{ t('parental.remove') }}</button>
+                                </form>
+                            </div>
                         </div>
-                        <div style="margin-top: 20px; display: flex; gap: 10px;">
-                            <button class="purple-btn" style="flex: 1; font-size: 12px; padding: 8px;" onclick="alert('جاري تتبع موقع هاتف أحمد...')">تتبع الموقع</button>
-                            <button class="purple-btn" style="flex: 1; font-size: 12px; padding: 8px; background: #20173e; border: 1px solid #7c3aed;" onclick="alert('تم فحص جهاز الابن بنجاح')">فحص الجهاز</button>
-                        </div>
+                        {% endfor %}
                     </div>
+                </div>
+            {% else %}
+                <!-- واجهة الطفل -->
+                <div class="box">
+                    <h3><i class="fa-solid fa-shield-heart" style="color:#4ade80;"></i> {{ t('parental.child_title') }}</h3>
+                    <p class="hint">{{ t('parental.child_hint') }}</p>
+                    {% if guardians %}
+                    <div class="grid">
+                        {% for g in guardians %}
+                        <div class="card">
+                            <h4><i class="fa-solid fa-user-shield"></i> {{ g.username }}</h4>
+                            <div class="row"><span>{{ t('parental.since') }}</span><span>{{ g.since }}</span></div>
+                            <div class="actions">
+                                <form method="POST" onsubmit="return confirm('{{ t('parental.revoke_confirm') }}');">
+                                    <input type="hidden" name="action" value="revoke">
+                                    <input type="hidden" name="link_id" value="{{ g.link_id }}">
+                                    <button class="btn danger" type="submit">{{ t('parental.revoke') }}</button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}<p class="empty">{{ t('parental.no_guardians') }}</p>{% endif %}
+                </div>
 
+                <div class="box">
+                    <h3>{{ t('parental.join_title') }}</h3>
+                    <p class="hint">{{ t('parental.join_hint') }}</p>
+                    <form method="POST">
+                        <input type="hidden" name="action" value="accept_invite">
+                        <input type="text" name="code" maxlength="6" inputmode="numeric" placeholder="000000" required>
+                        <div class="actions">
+                            <button class="btn" type="submit">{{ t('parental.join_btn') }}</button>
+                        </div>
+                    </form>
+                    <form method="POST">
+                        <input type="hidden" name="action" value="join">
+                        <input type="text" name="code" maxlength="12" placeholder="ABCD2345">
+                        <div class="actions">
+                            <button class="btn ghost" type="submit">{{ t('parental.join_legacy') }}</button>
+                        </div>
+                    </form>
                 </div>
             {% endif %}
         </main>

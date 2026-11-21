@@ -1,0 +1,11 @@
+<div class="sidebar">
+    <h2 class="app-title">{{ app_name }}</h2>
+    <a href="/" class="{{ 'active' if active == 'home' else '' }}"><span class="icon">🏠</span> {{ t('nav.dashboard') }}</a>
+    <a href="/scan" class="{{ 'active' if active == 'scan' else '' }}"><span class="icon">🛡️</span> {{ t('nav.scan_protection') }}</a>
+    <a href="/sos" class="{{ 'active' if active == 'sos' else '' }}"><span class="icon">🚨</span> {{ t('nav.sos_location') }}</a>
+    <a href="/subscriptions" class="{{ 'active' if active == 'subs' else '' }}"><span class="icon">💎</span> {{ t('nav.subscriptions') }}</a>
+    <a href="/parental" class="{{ 'active' if active == 'parental' else '' }}"><span class="icon">👨‍👩‍👧‍👦</span> {{ t('nav.parental') }}</a>
+    <a href="/notifications" class="{{ 'active' if active == 'notif' else '' }}"><span class="icon">🔔</span> {{ t('nav.notifications') }}</a>
+    <a href="/profile" class="{{ 'active' if active == 'profile' else '' }}"><span class="icon">👤</span> {{ t('nav.profile') }}</a>
+    <a href="/settings" class="{{ 'active' if active == 'settings' else '' }}"><span class="icon">⚙️</span> {{ t('nav.settings') }}</a>
+</div>

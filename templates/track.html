@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="{{ lang }}" dir="{{ dir }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Safe Guard - تتبع الموقع</title>
+    <title>{{ app_name }} - {{ t('track.live') }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
@@ -25,23 +25,23 @@
         {% if ev.status == 'active' %}
         <div id="live">
             <div class="banner">
-                <h1>🚨 {{ owner.username }} في حالة طوارئ</h1>
-                <p>الموقع يتحدث تلقائياً كل بضع ثوانٍ</p>
+                <h1>🚨 {{ t('track.emergency', username=owner.username) }}</h1>
+                <p>{{ t('track.update_hint') }}</p>
             </div>
-            <iframe class="map" id="map" title="الموقع"></iframe>
+            <iframe class="map" id="map" title="{{ t('track.live') }}"></iframe>
             <div class="meta">
-                <span class="live"><i class="fa-solid fa-circle" style="font-size:8px;"></i> تتبع مباشر</span>
-                <span>آخر تحديث: <b id="updated">{{ updated }}</b></span>
-                <span>الدقة: <b id="acc">{{ ev.accuracy|round|int }}</b> متر</span>
+                <span class="live"><i class="fa-solid fa-circle" style="font-size:8px;"></i> {{ t('track.live') }}</span>
+                <span>{{ t('track.updated') }}: <b id="updated">{{ updated }}</b></span>
+                <span>{{ t('track.accuracy') }}: <b id="acc">{{ ev.accuracy|round|int }}</b> {{ t('track.meters') }}</span>
             </div>
-            <a class="btn" id="gmaps" target="_blank" rel="noopener">فتح في خرائط جوجل</a>
+            <a class="btn" id="gmaps" target="_blank" rel="noopener">{{ t('track.open_maps') }}</a>
         </div>
         {% endif %}
 
         <div class="ended{{ ' show' if ev.status != 'active' else '' }}" id="ended">
             <i class="fa-solid fa-circle-check"></i>
-            <h2>انتهى التتبع</h2>
-            <p style="color:#a29db5;margin-top:6px;">أوقف المستخدم مشاركة الموقع.</p>
+            <h2>{{ t('track.ended_title') }}</h2>
+            <p style="color:#a29db5;margin-top:6px;">{{ t('track.ended_desc') }}</p>
         </div>
     </div>
 

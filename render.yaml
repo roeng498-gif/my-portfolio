@@ -1,0 +1,43 @@
+services:
+  - type: web
+    name: safeguard-api
+    runtime: python
+    plan: free
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: gunicorn app:app --workers 2 --threads 4 --timeout 120 --access-logfile - --error-logfile -
+    healthCheckPath: /healthz
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: PYTHON_VERSION
+        value: 3.12.6
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: safeguard-db
+          property: connectionString
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: DEFAULT_LANG
+        value: ar
+      - key: SMS_PROVIDER
+        value: console
+      - key: GOOGLE_SAFE_BROWSING_KEY
+        sync: false
+      - key: VIRUSTOTAL_API_KEY
+        sync: false
+      - key: FCM_PROJECT_ID
+        sync: false
+      - key: FCM_CREDENTIALS
+        sync: false
+      - key: SUPPORT_EMAIL
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
+
+databases:
+  - name: safeguard-db
+    plan: free
+    databaseName: safeguard
+    ipAllowList: []

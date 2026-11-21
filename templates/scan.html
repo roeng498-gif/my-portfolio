@@ -1,73 +1,82 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="{{ lang }}" dir="{{ dir }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Safe Guard - الفحص والحماية</title>
+    <title>{{ app_name }} - {{ t('scan.title') }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; max-width: 800px; margin: 20px auto; }
-        .stat-card { background: #1e1b4b; padding: 18px; border-radius: 14px; text-align: right; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; max-width: 860px; margin: 20px auto; }
+        .stat-card { background: #1e1b4b; padding: 18px; border-radius: 14px; }
         .stat-card span { color: #94a3b8; font-size: 14px; }
-        .stat-card strong { display: block; margin-top: 8px; font-size: 22px; color: white; }
+        .stat-card strong { display: block; margin-top: 8px; font-size: 20px; color: #fff; }
         .stat-ok { color: #4ade80 !important; }
         .stat-bad { color: #f87171 !important; }
-        .scan-container { max-width: 800px; margin: 20px auto; background: #1e1b4b; padding: 30px; border-radius: 20px; box-shadow: 0 4px 25px rgba(0,0,0,.4); text-align: center; }
-        .scan-input { width: 100%; box-sizing: border-box; padding: 14px; background: #0f172a; border: 1px solid rgba(255,255,255,.1); color: white; border-radius: 10px; font-size: 16px; margin-top: 20px; direction: ltr; }
+        .scan-container { max-width: 860px; margin: 20px auto; background: #1e1b4b; padding: 28px; border-radius: 18px; }
+        .scan-input { width: 100%; box-sizing: border-box; padding: 14px; background: #0f172a; border: 1px solid rgba(255,255,255,.1); color: #fff; border-radius: 10px; font-size: 16px; margin-top: 16px; direction: ltr; }
         .btn-row { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
-        .btn { flex: 1; min-width: 140px; padding: 13px 18px; border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer; text-decoration: none; color: white; text-align: center; transition: .3s; border: 1px solid rgba(255,255,255,.25); background: transparent; }
+        .btn { flex: 1; min-width: 140px; padding: 13px 18px; border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer; text-decoration: none; color: #fff; text-align: center; transition: .3s; border: 1px solid rgba(255,255,255,.25); background: transparent; font-family: inherit; }
         .btn:hover { border-color: #4f46e5; background: #1e293b; }
         .btn-primary { background: linear-gradient(135deg, #4f46e5, #3b82f6); border: none; }
-        .btn-primary:hover { opacity: .9; background: linear-gradient(135deg, #4f46e5, #3b82f6); }
         .btn:disabled { opacity: .6; cursor: wait; }
-        .result-box { margin-top: 25px; padding: 20px; border-radius: 12px; font-size: 16px; font-weight: bold; }
-        .result-safe { background: rgba(22,163,74,.2); border: 1px solid #16a34a; color: #4ade80; }
-        .result-danger { background: rgba(239,68,68,.2); border: 1px solid #ef4444; color: #f87171; }
-        .result-meta { margin-top: 8px; font-size: 13px; font-weight: normal; color: #cbd5e1; }
+        .result-box { margin-top: 22px; padding: 18px; border-radius: 12px; font-size: 15px; }
+        .result-safe { background: rgba(22,163,74,.18); border: 1px solid #16a34a; }
+        .result-danger { background: rgba(239,68,68,.18); border: 1px solid #ef4444; }
+        .result-title { font-weight: bold; margin-bottom: 8px; }
+        .result-safe .result-title { color: #4ade80; }
+        .result-danger .result-title { color: #f87171; }
+        .result-meta { font-size: 12.5px; color: #cbd5e1; word-break: break-all; direction: ltr; }
+        .kv { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-top: 14px; }
+        .kv div { background: rgba(15,23,42,.6); border-radius: 9px; padding: 10px; font-size: 13px; color: #94a3b8; }
+        .kv b { display: block; color: #fff; font-size: 16px; margin-top: 4px; }
+        ul.findings { margin: 12px 0 0; padding-inline-start: 20px; color: #e2e8f0; font-size: 13.5px; line-height: 1.9; }
+        .src { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+        .src span { font-size: 12px; border-radius: 8px; padding: 5px 10px; background: #0f172a; border: 1px solid rgba(255,255,255,.1); color: #cbd5e1; }
+        .src .hit { border-color: #ef4444; color: #f87171; }
+        .src .clean { border-color: #16a34a; color: #4ade80; }
+        .scan-error { background: rgba(217,83,79,.15); border: 1px solid rgba(217,83,79,.5); color: #f87171; border-radius: 10px; padding: 12px 14px; margin-top: 14px; font-size: 14px; }
+        .apps { max-width: 860px; margin: 20px auto; background: #1e1b4b; padding: 22px; border-radius: 16px; }
+        .app-item { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,.06); font-size: 13px; color: #cbd5e1; }
+        .app-item:last-child { border-bottom: 0; }
+        .badge { font-size: 11px; padding: 3px 9px; border-radius: 10px; background: rgba(76,175,80,.18); color: #4ade80; }
+        .badge.warn { background: rgba(250,204,21,.18); color: #facc15; }
+        .badge.danger { background: rgba(239,68,68,.18); color: #f87171; }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <div class="sidebar">
-            <h2 class="app-title">Safe Guard</h2>
-            <a href="/"><span class="icon">🏠</span> لوحة التحكم</a>
-            <a href="/scan" class="active"><span class="icon">🛡️</span> الفحص والحماية</a>
-            <a href="/sos"><span class="icon">🚨</span> زر الطوارئ</a>
-            <a href="/subscriptions"><span class="icon">💎</span> الاشتراكات</a>
-            <a href="/profile"><span class="icon">👤</span> صفحة المستخدم</a>
-            <a href="/parental"><span class="icon">👨‍👩‍👧‍👦</span> الرقابة الأبوية</a>
-            <a href="/notifications"><span class="icon">🔔</span> الإشعارات</a>
-            <a href="/settings"><span class="icon">⚙️</span> الإعدادات</a>
-        </div>
+        {% set active = 'scan' %}{% include '_nav.html' %}
 
         <main class="main-content">
-            <h1>الفحص والحماية</h1>
-            <p class="subtitle">افحص أي رابط واكتشف الروابط الضارة فوراً</p>
+            <h1>{{ t('scan.title') }}</h1>
+            <p class="subtitle">{{ t('scan.subtitle') }}</p>
 
-            <!-- كروت الحالة -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <span>حالة الأمان</span>
-                    {% if scan_result %}
-                        {% if scan_result.safe %}<strong class="stat-ok">آمن</strong>
-                        {% else %}<strong class="stat-bad">خطر</strong>{% endif %}
-                    {% else %}<strong class="stat-ok">آمن</strong>{% endif %}
+                    <span>{{ t('scan.status') }}</span>
+                    {% if scan_result and not scan_result.safe %}
+                        <strong class="stat-bad">{{ t('scan.risk') }}</strong>
+                    {% else %}
+                        <strong class="stat-ok">{{ t('scan.safe') }}</strong>
+                    {% endif %}
                 </div>
                 <div class="stat-card">
-                    <span>نوع الفحص</span>
-                    <strong>{% if scan_type == 'full' %}شامل{% elif scan_type == 'quick' %}سريع{% else %}عادي{% endif %}</strong>
+                    <span>{{ t('scan.type') }}</span>
+                    <strong>{{ t('scan.type_' + scan_type) }}</strong>
                 </div>
                 <div class="stat-card">
-                    <span>التهديدات المرصودة</span>
-                    <strong>{% if scan_result and not scan_result.safe %}1{% else %}0{% endif %}</strong>
+                    <span>{{ t('scan.threats') }}</span>
+                    <strong>{{ 1 if scan_result and not scan_result.safe else 0 }}</strong>
                 </div>
             </div>
 
             <div class="scan-container">
-                <i class="fa-solid fa-shield-halved" style="font-size:50px;color:#60a5fa;margin-bottom:15px;"></i>
-                <h2>فحص الروابط</h2>
-                <p style="color:#94a3b8;margin-top:10px;">أدخل الرابط ثم اختر نوع الفحص</p>
+                <i class="fa-solid fa-shield-halved" style="font-size:42px;color:#60a5fa;"></i>
+                <h2 style="margin-top:12px;">{{ t('scan.form_title') }}</h2>
+                <p style="color:#94a3b8;margin-top:8px;font-size:14px;">{{ t('scan.form_hint') }}</p>
+
+                {% if scan_error %}<div class="scan-error">{{ scan_error }}</div>{% endif %}
 
                 <form method="POST" id="scanForm">
                     <input type="text" name="url_to_scan" class="scan-input" placeholder="https://example.com"
@@ -75,36 +84,82 @@
 
                     <div class="btn-row">
                         <button type="submit" name="scan_type" value="normal" class="btn btn-primary">
-                            <i class="fa-solid fa-magnifying-glass"></i> فحص الرابط
+                            <i class="fa-solid fa-magnifying-glass"></i> {{ t('scan.btn_normal') }}
                         </button>
-                        <button type="submit" name="scan_type" value="quick" class="btn">
-                            ⚡ فحص سريع
-                        </button>
-                        <button type="submit" name="scan_type" value="full" class="btn">
-                            🛡️ فحص شامل
-                        </button>
-                        <a href="/scan" class="btn">
-                            <i class="fa-solid fa-rotate-right"></i> بدء فحص جديد
-                        </a>
+                        <button type="submit" name="scan_type" value="quick" class="btn">{{ t('scan.btn_quick') }}</button>
+                        <button type="submit" name="scan_type" value="full" class="btn">{{ t('scan.btn_full') }}</button>
+                        <a href="/scan" class="btn"><i class="fa-solid fa-rotate-right"></i> {{ t('scan.btn_new') }}</a>
                     </div>
                 </form>
 
                 {% if scan_result %}
-                    <div class="result-box {{ 'result-safe' if scan_result.safe else 'result-danger' }}">
-                        <i class="fa-solid {{ 'fa-circle-check' if scan_result.safe else 'fa-triangle-exclamation' }}" style="margin-left:8px;"></i>
+                <div class="result-box {{ 'result-safe' if scan_result.safe else 'result-danger' }}">
+                    <div class="result-title">
+                        <i class="fa-solid {{ 'fa-circle-check' if scan_result.safe else 'fa-triangle-exclamation' }}"></i>
                         {{ scan_result.msg }}
-                        {% if scanned_url %}<div class="result-meta" dir="ltr">{{ scanned_url }}</div>{% endif %}
                     </div>
+                    <div class="result-meta">{{ scan_result.final_url or scanned_url }}</div>
+
+                    <div class="kv">
+                        <div>{{ t('scan.score') }}<b>{{ scan_result.score }}</b></div>
+                        <div>{{ t('scan.level') }}<b>{{ t('scan.level.' + (scan_result.level or 'safe')) }}</b></div>
+                        <div>{{ t('scan.type') }}<b>{{ t('scan.type_' + scan_type) }}</b></div>
+                    </div>
+
+                    {% if scan_result.warnings %}
+                    <ul class="findings">
+                        {% for w in scan_result.warnings %}<li>{{ w }}</li>{% endfor %}
+                    </ul>
+                    {% endif %}
+
+                    <div class="src">
+                        {% for name, label in [('google', t('scan.src_google')), ('urlhaus', t('scan.src_urlhaus')), ('virustotal', t('scan.src_virustotal'))] %}
+                            {% set src = scan_result.sources.get(name) or {} %}
+                            {% set st = src.status or 'skipped' %}
+                            <span class="{{ 'hit' if st == 'hit' else ('clean' if st == 'clean' else '') }}">{{ label }}: {{ t('scan.st_' + st) }}</span>
+                        {% endfor %}
+                    </div>
+
+                    {% if scan_result.final_url and scan_result.final_url != scanned_url %}
+                        <div class="result-meta" style="margin-top:10px;">{{ t('scan.final_url') }}: {{ scan_result.final_url }}</div>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="apps">
+                <h3 style="font-size:16px;margin-bottom:6px;">{{ t('scan.apps_title') }}</h3>
+                <p style="font-size:13px;color:#8c85a3;">{{ t('scan.apps_hint') }}</p>
+                {% if app_report %}
+                    <p style="font-size:13px;color:#cbd5e1;margin-top:10px;">
+                        {{ t('scan.app_report_time') }}: {{ app_report_time }} · {{ app_report.app_count }}
+                    </p>
+                    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;">
+                        {% for name in app_names[:30] %}<span class="badge">{{ name }}</span>{% endfor %}
+                    </div>
+                {% else %}
+                    <p style="font-size:13px;color:#8c85a3;margin-top:10px;">{{ t('scan.apps_none') }}</p>
+                {% endif %}
+
+                {% if app_scans %}
+                    <h4 style="font-size:14px;margin:18px 0 4px;color:#c4b5fd;">{{ t('scan.recent_apps') }}</h4>
+                    {% for scan in app_scans %}
+                    <div class="app-item">
+                        <span>{{ scan.label or scan.package or 'APK' }}</span>
+                        <span class="badge {{ 'danger' if scan.level in ['high', 'critical'] else ('warn' if scan.level in ['medium', 'low'] else '') }}">
+                            {{ t('app_scan.level.' + scan.level) }} · {{ scan.score }}
+                        </span>
+                    </div>
+                    {% endfor %}
                 {% endif %}
             </div>
         </main>
     </div>
 
     <script>
-        // يمنع الضغط المتكرر ويوضح إن الفحص شغال
         document.getElementById('scanForm').addEventListener('submit', function (e) {
             var btn = e.submitter;
-            if (btn) { setTimeout(function () { btn.disabled = true; btn.textContent = 'جاري الفحص...'; }, 0); }
+            if (btn) { setTimeout(function () { btn.disabled = true; btn.textContent = '{{ t('scan.scanning') }}'; }, 0); }
         });
     </script>
 </body>

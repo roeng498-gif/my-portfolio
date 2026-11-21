@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}" dir="{{ dir }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>{{ app_name }} - {{ t('login.title') }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .auth-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .auth-card { width: 100%; max-width: 420px; background: #16102e; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; padding: 32px 28px; }
+        .auth-logo { width: 56px; height: 56px; margin: 0 auto 14px; border-radius: 14px; background: #6C5CE7; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #fff; }
+        .auth-card h1 { text-align: center; font-size: 22px; margin-bottom: 6px; }
+        .auth-card .subtitle { text-align: center; margin-bottom: 24px; }
+        .auth-card label { display: block; font-size: 13px; color: #a29db5; margin-bottom: 6px; }
+        .auth-card input { width: 100%; box-sizing: border-box; padding: 12px; margin-bottom: 16px; background: #20173e; border: 1px solid rgba(255,255,255,.1); color: #fff; border-radius: 10px; font-family: inherit; font-size: 15px; }
+        .auth-card input:focus { outline: 2px solid #8B5CF6; border-color: transparent; }
+        .auth-btn { width: 100%; min-height: 48px; border: 0; border-radius: 10px; background: #6C5CE7; color: #fff; font-family: inherit; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .auth-error { background: rgba(217,83,79,.15); border: 1px solid rgba(217,83,79,.5); color: #f87171; padding: 10px 14px; border-radius: 10px; font-size: 14px; margin-bottom: 16px; }
+        .auth-alt { text-align: center; margin-top: 18px; font-size: 14px; color: #a29db5; }
+        .auth-alt a { color: #C4B5FD; text-decoration: none; font-weight: bold; }
+        .lang-row { text-align: center; margin-top: 14px; font-size: 13px; }
+        .lang-row a { color: #8b86a3; text-decoration: none; margin: 0 6px; }
+    </style>
+</head>
+<body>
+    <div class="auth-wrap">
+        <form class="auth-card" method="POST" autocomplete="on">
+            <div class="auth-logo"><i class="fa-solid fa-shield-halved"></i></div>
+            <h1>{{ t('login.title') }}</h1>
+            <p class="subtitle">{{ t('login.subtitle') }}</p>
+
+            {% if error %}<div class="auth-error" role="alert">{{ error }}</div>{% endif %}
+
+            <input type="hidden" name="next" value="{{ next }}">
+
+            <label for="username">{{ t('login.username') }}</label>
+            <input id="username" type="text" name="username" value="{{ username }}" autocomplete="username" required autofocus>
+
+            <label for="password">{{ t('login.password') }}</label>
+            <input id="password" type="password" name="password" autocomplete="current-password" required>
+
+            <button type="submit" class="auth-btn">{{ t('login.btn') }}</button>
+
+            <p class="auth-alt">{{ t('login.no_account') }} <a href="{{ url_for('register') }}">{{ t('login.create') }}</a></p>
+            <p class="lang-row"><a href="{{ url_for('set_lang', code='ar', next=request.path) }}">العربية</a> · <a href="{{ url_for('set_lang', code='en', next=request.path) }}">English</a></p>
+        </form>
+    </div>
+</body>
+</html>

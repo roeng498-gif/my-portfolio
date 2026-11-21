@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html lang="{{ lang }}" dir="{{ dir }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>{{ app_name }} - {{ t('nav.privacy') }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .wrap { max-width: 760px; margin: 0 auto; padding: 28px 20px 60px; }
+        .card { background: #16102e; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; padding: 26px; }
+        .card h1 { font-size: 24px; margin-bottom: 6px; }
+        .card .updated { color: #8b86a3; font-size: 13px; margin-bottom: 22px; }
+        .card h2 { font-size: 17px; margin: 22px 0 8px; color: #C4B5FD; }
+        .card p, .card li { color: #d9d5e8; font-size: 14.5px; line-height: 1.95; }
+        .card ul { padding-inline-start: 22px; }
+        .card a { color: #C4B5FD; }
+        .back { display: inline-block; margin-top: 24px; color: #C4B5FD; text-decoration: none; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="card">
+            <h1>{{ t('nav.privacy') }} â€” {{ app_name }}</h1>
+            <p class="updated">{{ t('common.done') }}: 2026-11-01 آ· v{{ consent_version|default('2026-11-1') }}</p>
+
+            {% if lang == 'ar' %}
+            <h2>ط­ظ‚ظˆظ‚ظƒ ظƒط·ظپظ„</h2>
+            <ul>
+                <li>ظ„ظƒ ط§ظ„ط­ظ‚ ظپظٹ ظ…ط¹ط±ظپط© ظ…ظ† ظٹط±ط§ظ‚ط¨ ط­ط³ط§ط¨ظƒ.</li>
+                <li>ظ„ظƒ ط§ظ„ط­ظ‚ ظپظٹ ط¥ظ„ط؛ط§ط، ط§ظ„ط±ظ‚ط§ط¨ط© ظپظٹ ط£ظٹ ظˆظ‚طھ ظˆظ…ظ† ط؛ظٹط± ظ…ظˆط§ظپظ‚ط© ظˆظ„ظٹ ط£ظ…ط±ظƒ.</li>
+                <li>ظˆظ„ظٹ ط£ظ…ط±ظƒ ظٹط¹ط±ظپ ظپظ‚ط·: ظ…ظˆظ‚ط¹ظƒ ظˆظ‚طھ ط§ظ„ط·ظˆط§ط±ط¦طŒ ط§ظ„ط±ظˆط§ط¨ط· ط§ظ„ظ„ظٹ ظپط­طµطھظ‡ط§طŒ ظˆط§ظ„طھط·ط¨ظٹظ‚ط§طھ ط§ظ„ظ„ظٹ ظˆط§ظپظ‚طھ طھط¨ط¹طھ ط¨ظٹط§ظ†ط§طھظ‡ط§.</li>
+                <li>ظ„ظ† ظ†ط´ط§ط±ظƒ ط¨ظٹط§ظ†ط§طھظƒ ظ…ط¹ ط£ظٹ ط·ط±ظپ ط«ط§ظ„ط« ط؛ظٹط± ظ…ط§ ظ‡ظˆ ظ…ظˆط¶ط­ ظ‡ظ†ط§.</li>
+                <li>ظ„ظƒ ط§ظ„ط­ظ‚ ظپظٹ ط­ط°ظپ ط­ط³ط§ط¨ظƒ ظˆظƒظ„ ط¨ظٹط§ظ†ط§طھظƒ ظ†ظ‡ط§ط¦ظٹظ‹ط§.</li>
+            </ul>
+
+            <h2>ظ…ظˆط§ظپظ‚طھظƒ ظ…ط·ظ„ظˆط¨ط©</h2>
+            <p>ظ…ظپظٹط´ ط±ط¨ط· ط¨ظٹط­طµظ„ ظ…ظ† ط؛ظٹط± ظ…ظˆط§ظپظ‚ط© طµط±ظٹط­ط© ظ…ظ†ظƒطŒ ظˆط¨ظ†ط­طھظپط¸ ط¨ط³ط¬ظ„ ط¨ط§ظ„ظ…ظˆط§ظپظ‚ط© (ظˆظ‚طھ + ظ†ط³ط®ط© ط§ظ„ظ†طµ).</p>
+
+            <h2>ط§ظ„ط¨ظٹط§ظ†ط§طھ ط§ظ„ظ„ظٹ ط¨ظ†ط¬ظ…ط¹ظ‡ط§</h2>
+            <ul>
+                <li>ط§ظ„ط§ط³ظ…طŒ ط§ظ„ط¨ط±ظٹط¯طŒ ط§ظ„ظ‡ط§طھظپ â€” ظ„ظ„طھط³ط¬ظٹظ„ ظˆطھط£ظƒظٹط¯ ط§ظ„ط­ط³ط§ط¨.</li>
+                <li>ط§ظ„ظ…ظˆظ‚ط¹ ط§ظ„ط¬ط؛ط±ط§ظپظٹ â€” ظˆظ‚طھ ط§ظ„ط·ظˆط§ط±ط¦ ظپظ‚ط·.</li>
+                <li>ط§ظ„ط±ظˆط§ط¨ط· ط§ظ„ظ…ظپط­ظˆطµط© â€” ظ„ط­ظ…ط§ظٹط© ط£ط³ط±طھظƒ ظˆطھط­ط³ظٹظ† ط§ظ„ظپط­طµ.</li>
+                <li>ظ‚ط§ط¦ظ…ط© ط§ظ„طھط·ط¨ظٹظ‚ط§طھ â€” ط¨ط³ ط§ظ„ظ„ظٹ ط¬ظ‡ط§ط²ظƒ ظٹط¨ط¹طھظ‡ط§ ط¨ط¹ط¯ ظ…ظˆط§ظپظ‚طھظƒ.</li>
+                <li>ط³ط¬ظ„ ط§ظ„ط¹ظ…ظ„ظٹط§طھ (Audit) â€” ظ„ظ…ط¹ط±ظپط© ظ…ظٹظ† ط¹ظ…ظ„ ط¥ظٹظ‡ ظˆط¥ظ…طھظ‰.</li>
+            </ul>
+
+            <h2>ظ…ط¯ط© ط§ظ„ط§ط­طھظپط§ط¸</h2>
+            <ul>
+                <li>ط¨ظٹط§ظ†ط§طھ ط§ظ„ط­ط³ط§ط¨: ظ„ط­ط¯ ظ…ط§ طھط­ط°ظپ ط­ط³ط§ط¨ظƒ.</li>
+                <li>ط³ط¬ظ„ ط§ظ„ظپط­طµ: 90 ظٹظˆظ….</li>
+                <li>ط³ط¬ظ„ ط§ظ„ط·ظˆط§ط±ط¦: 30 ظٹظˆظ….</li>
+                <li>ط³ط¬ظ„ ط§ظ„ط¹ظ…ظ„ظٹط§طھ: 180 ظٹظˆظ….</li>
+            </ul>
+
+            <h2>ط§ظ„ط¥ط¹ظ„ط§ظ†ط§طھ</h2>
+            <p>ط§ظ„ط¥ط¹ظ„ط§ظ†ط§طھ ظ…ظ‚ظپظˆظ„ط© ط§ظپطھط±ط§ط¶ظٹظ‹ط§طŒ ظˆظˆظ„ظٹ ط£ظ…ط±ظƒ ظ‡ظˆ ط§ظ„ظ„ظٹ ظٹظ‚ط±ط± طھط´ط؛ظٹظ„ظ‡ط§. ظ„ظˆ ط§طھط´ط؛ظ„طھطŒ ط¨طھط¨ظ‚ظ‰ ط¥ط¹ظ„ط§ظ†ط§طھ ط¹ط§ط¦ظ„ظٹط© ط¢ظ…ظ†ط© ظپظ‚ط· ط­ط³ط¨ ط³ظٹط§ط³ط© Google Play Families.</p>
+
+            <h2>ط§ظ„طھظˆط§طµظ„</h2>
+            <p>ظ„ط£ظٹ ط³ط¤ط§ظ„ ط£ظˆ ط·ظ„ط¨ ط­ط°ظپ ط¨ظٹط§ظ†ط§طھ: <a href="mailto:{{ support_email }}">{{ support_email }}</a></p>
+            {% else %}
+            <h2>Your rights as a child</h2>
+            <ul>
+                <li>You have the right to know who is monitoring your account.</li>
+                <li>You may revoke monitoring at any time, without your guardian's approval.</li>
+                <li>Your guardian only sees: your location during an emergency, the links you scanned, and the apps you agreed to report.</li>
+                <li>We do not share your data with third parties beyond what is described here.</li>
+                <li>You may delete your account and all your data permanently.</li>
+            </ul>
+
+            <h2>Consent is required</h2>
+            <p>No link is created without your explicit consent, and we store a consent record (timestamp + text version).</p>
+
+            <h2>Data we collect</h2>
+            <ul>
+                <li>Name, email, phone â€” for registration and account verification.</li>
+                <li>Location â€” only during an emergency.</li>
+                <li>Scanned links â€” to protect your family and improve scanning.</li>
+                <li>Installed apps â€” only those your device reports after your consent.</li>
+                <li>Audit trail â€” who did what and when.</li>
+            </ul>
+
+            <h2>Retention</h2>
+            <ul>
+                <li>Account data: until you delete your account.</li>
+                <li>Scan history: 90 days.</li>
+                <li>Emergency history: 30 days.</li>
+                <li>Audit log: 180 days.</li>
+            </ul>
+
+            <h2>Ads</h2>
+            <p>Ads are off by default and only your guardian can enable them. When enabled, they are child-safe family ads per Google Play Families policy.</p>
+
+            <h2>Contact</h2>
+            <p>Questions or data deletion requests: <a href="mailto:{{ support_email }}">{{ support_email }}</a></p>
+            {% endif %}
+
+            <a class="back" href="{{ url_for('index') if user else url_for('login') }}">
+                <i class="fa-solid fa-arrow-{{ 'right' if dir == 'rtl' else 'left' }}"></i> {{ t('common.back') }}
+            </a>
+        </div>
+    </div>
+</body>
+</html>

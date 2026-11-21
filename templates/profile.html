@@ -1,108 +1,80 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="{{ lang }}" dir="{{ dir }}">
 <head>
     <meta charset="UTF-8">
-    <title>Safe Guard - حساب المستخدم</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>{{ app_name }} - {{ t('profile.title') }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
-        .profile-card {
-            background: #1e1b4b;
-            padding: 30px;
-            border-radius: 16px;
-            max-width: 650px;
-            margin: 30px auto;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
-        .form-group {
-            margin-bottom: 20px;
-            text-align: right;
-        }
-        .form-group label {
-            display: block;
-            color: #94a3b8;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-        .form-control {
-            width: 100%;
-            padding: 12px;
-            background: #0f172a;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-        .save-btn {
-            background: linear-gradient(135deg, #4f46e5, #3b82f6);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-            transition: 0.3s;
-        }
-        .save-btn:hover {
-            opacity: 0.9;
-        }
+        .profile-card { background: #1e1b4b; padding: 26px; border-radius: 16px; max-width: 620px; margin: 20px auto; }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; color: #94a3b8; margin-bottom: 7px; font-size: 13.5px; }
+        .form-control { width: 100%; box-sizing: border-box; padding: 12px; background: #0f172a; border: 1px solid rgba(255,255,255,.1); color: #fff; border-radius: 8px; font-size: 15px; font-family: inherit; }
+        .hint { font-size: 12px; color: #8c85a3; margin-top: 5px; }
+        .save-btn { width: 100%; border: 0; border-radius: 9px; padding: 13px; background: linear-gradient(135deg, #4f46e5, #3b82f6); color: #fff; font-family: inherit; font-size: 15px; font-weight: bold; cursor: pointer; }
+        .msg { border-radius: 10px; padding: 12px 14px; margin-bottom: 14px; font-size: 14px; }
+        .msg.ok { background: rgba(76,175,80,.15); border: 1px solid rgba(76,175,80,.5); color: #86efac; }
+        .msg.err { background: rgba(217,83,79,.15); border: 1px solid rgba(217,83,79,.5); color: #f87171; }
+        .verify-strip { display: flex; justify-content: space-between; align-items: center; gap: 10px; background: rgba(234,179,8,.12); border: 1px solid rgba(234,179,8,.4); border-radius: 10px; padding: 12px 14px; font-size: 13px; color: #fde68a; margin-bottom: 16px; }
+        .verify-strip a { color: #fde68a; font-weight: bold; }
+        .badge { font-size: 11.5px; padding: 4px 10px; border-radius: 10px; background: rgba(76,175,80,.18); color: #4ade80; }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- الشريط الجانبي الثابت -->
-        <aside class="sidebar">
-            <div class="brand-container">
-                <span class="brand-name">Safe Guard</span>
-                <div class="brand-logo-box"><i class="fa-solid fa-shield-halved"></i></div>
-            </div>
-            <nav class="sidebar-nav">
-                <a href="/" class="nav-link"><span class="nav-label">لوحة التحكم</span><i class="fa-solid fa-table-cells-large nav-icon"></i></a>
-                <a href="/scan" class="nav-link"><span class="nav-label">الفحص والحماية</span><i class="fa-regular fa-shield-check nav-icon"></i></a>
-                <a href="/sos" class="nav-link"><span class="nav-label">زر الطوارئ والموقع</span><i class="fa-solid fa-location-crosshairs nav-icon"></i></a>
-                <a href="/subscriptions" class="nav-link"><span class="nav-label">الاشتراكات</span><i class="fa-solid fa-gem nav-icon"></i></a>
-                <a href="/profile" class="nav-link active"><span class="nav-label">صفحة المستخدم</span><i class="fa-regular fa-user nav-icon"></i></a>
-                <a href="/parental" class="nav-link"><span class="nav-label">الرقابة الوالدية</span><i class="fa-solid fa-users nav-icon"></i></a>
-                <a href="/notifications" class="nav-link"><span class="nav-label">الإشعارات والتنبيهات</span><i class="fa-solid fa-bell nav-icon"></i></a>
-                <a href="/settings" class="nav-link"><span class="nav-label">الإعدادات</span><i class="fa-solid fa-sun nav-icon"></i></a>
-            </nav>
-        </aside>
+        {% set active = 'profile' %}{% include '_nav.html' %}
 
-        <!-- المحتوى الرئيسي -->
         <main class="main-content">
-            <h1>حساب المستخدم</h1>
-            <p class="subtitle">إدارة وتحديد تفاصيل المستخدم في النظام (ولي أمر أو طفل)</p>
+            <h1>{{ t('profile.title') }}</h1>
+            <p class="subtitle">{{ t('profile.subtitle') }}</p>
+
+            {% if message %}<div class="msg ok"><i class="fa-solid fa-circle-check"></i> {{ message }}</div>{% endif %}
+            {% if error %}<div class="msg err"><i class="fa-solid fa-circle-exclamation"></i> {{ error }}</div>{% endif %}
+
+            {% if not user.phone_verified %}
+            <div class="verify-strip">
+                <span><i class="fa-solid fa-triangle-exclamation"></i> {{ t('profile.not_verified') }}</span>
+                <a href="{{ url_for('verify') }}">{{ t('profile.change_phone') }}</a>
+            </div>
+            {% endif %}
 
             <div class="profile-card">
                 <form method="POST">
                     <div class="form-group">
-                        <label>اسم المستخدم:</label>
-                        <input type="text" name="username" class="form-control" value="{{ user.username }}" required>
+                        <label for="username">{{ t('profile.username') }}</label>
+                        <input id="username" type="text" name="username" class="form-control" value="{{ user.username }}" minlength="3" maxlength="40" required>
                     </div>
 
                     <div class="form-group">
-                        <label>البريد الإلكتروني:</label>
-                        <input type="email" name="email" class="form-control" value="{{ user.email }}">
+                        <label for="email">{{ t('profile.email') }}</label>
+                        <input id="email" type="email" name="email" class="form-control" value="{{ user.email or '' }}">
                     </div>
 
                     <div class="form-group">
-                        <label>رقم الهاتف:</label>
-                        <input type="text" name="phone" class="form-control" value="{{ user.phone }}">
+                        <label for="phone">{{ t('profile.phone') }}</label>
+                        <input id="phone" type="tel" name="phone" class="form-control" value="{{ user.phone or '' }}" dir="ltr">
+                        <p class="hint">{{ t('profile.phone_hint') }}</p>
                     </div>
 
                     <div class="form-group">
-                        <label>نوع الحساب في النظام:</label>
-                        <select name="role" class="form-control">
-                            <option value="child" {% if user.role == 'child' %}selected{% endif %}>طفل (جهاز محمي)</option>
-                            <option value="parent" {% if user.role == 'parent' %}selected{% endif %}>ولي أمر (مدير النظام)</option>
+                        <label for="country">{{ t('profile.country') }}</label>
+                        <select id="country" name="country" class="form-control">
+                            {% for code, c in countries.items() %}
+                            <option value="{{ code }}" {% if user.country == code %}selected{% endif %}>{{ c[0] if lang == 'ar' else c[3] }}</option>
+                            {% endfor %}
                         </select>
                     </div>
 
-                    <button type="submit" class="save-btn">
-                        <i class="fa-solid fa-floppy-disk" style="margin-left: 8px;"></i> حفظ التغييرات
-                    </button>
+                    <div class="form-group">
+                        <label for="role">{{ t('profile.role') }}</label>
+                        <select id="role" name="role" class="form-control">
+                            <option value="child" {% if user.role == 'child' %}selected{% endif %}>{{ t('profile.role_child') }}</option>
+                            <option value="parent" {% if user.role == 'parent' %}selected{% endif %}>{{ t('profile.role_parent') }}</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="save-btn"><i class="fa-solid fa-floppy-disk"></i> {{ t('profile.save') }}</button>
                 </form>
             </div>
         </main>
