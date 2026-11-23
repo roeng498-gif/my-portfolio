@@ -1175,21 +1175,21 @@ def check_code(user, code):
     db.session.commit()
     links.log(user.id, 'phone_verified', 'user', user.id, ip=client_ip())
     return True, ''
-         
 @app.route('/verify', methods=['GET', 'POST'])
 @login_required
 def verify():
     user = current_user()
-    if user.phone_verified:
-        return redirect(url_for('index'))
+    
+    # [تعديل] بنتخطى التأكيد على طول وبنروح للرئيسية
+    return redirect(url_for('index'))
+
+    # الكود القديم تحت ده مش هيشتغل عشان في return فوقه، بس سيبته عشان ميمسحش
     msg = error = ''
     if request.method == 'POST':
         if request.form.get('action') == 'send':
-            # [تعديل] استقبال الكود بدل الرسالة
             ok, result_data, _ = issue_code(user)
             if ok:
                 msg, error = (tr('phone.code_sent', phone=mask_phone(user.phone)), '')
-                # للتجربة: لو السيرفر بيطبع في الكونسول، بنعرض الكود في رسالة عشان نستخدمه
                 if app.config.get('SMS_PROVIDER') == 'console':
                     msg += f" (كود التجربة: {result_data})"
             else:
@@ -1200,7 +1200,6 @@ def verify():
                 return redirect(url_for('index'))
             error = err
     return render_template('verify.html', masked=mask_phone(user.phone), msg=msg, error=error)
-
 
 # ==========================================================================
 # API: المصادقة
