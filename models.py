@@ -28,7 +28,7 @@ class User(db.Model):
     phone = db.Column(db.String(20), default='')
     role = db.Column(db.String(20), default='child')          # 'child' أو 'parent'
     country = db.Column(db.String(2), default='')             # EG, SA, AE...
-    phone_verified = db.Column(db.Boolean, default=False)
+    phone_verified = db.Column(db.Boolean, default=True)      # [تعديل] True عشان نتخطى الـ OTP
     password_hash = db.Column(db.String(255), default='')
     lang = db.Column(db.String(2), default='ar')
     # إعدادات الإشعارات (صفحة /settings بتحفظها فعلاً)
